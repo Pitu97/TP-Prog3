@@ -2,16 +2,16 @@ import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import { colores } from "../data/theme";
 
-function Tarjeta() {
+function Tarjeta({ title, price, image }) {
   return (
     <Card
       style={{ width: "14rem", backgroundColor: colores.card, border: "none" }}
     >
-      <Card.Img variant="top" src="holder.js/100px180" />
+      <Card.Img variant="top" src={image} />
       <Card.Body>
-        <Card.Title style={{ color: colores.textMain }}>Juego</Card.Title>
+        <Card.Title style={{ color: colores.textMain }}>{title}</Card.Title>
         <Card.Text style={{ color: colores.primary }}>
-          Precio: Muy caro para vos
+          Precio: ${price}
         </Card.Text>
         <Button
           style={{
