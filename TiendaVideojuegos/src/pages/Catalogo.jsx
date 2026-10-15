@@ -3,18 +3,18 @@ import Tarjeta from "../components/Tarjeta";
 
 import Form from "react-bootstrap/Form";
 
-function Catalogo() {
+function Catalogo({ juegos }) {
   return (
     <>
 
       <h2>Catalogo</h2>
       <div style={{ backgroundColor: "darkblue", height: "200px" }}>
         <Form>
-          {["checkbox", "checkbox", "checkbox"].map((type) => (
-            <div key={`default-${type}`} className="mb-3">
-              <Form.Check // prettier-ignore
+          {["checkbox", "checkbox", "checkbox"].map((type, index) => (
+            <div key={`default-${type}-${index}`} className="mb-3">
+              <Form.Check
                 type={type}
-                id={`default-${type}`}
+                id={`default-${type}-${index}`}
                 label={`default ${type}`}
               />
             </div>
@@ -23,10 +23,15 @@ function Catalogo() {
       </div>
       <section>
         <div className="Tarjetas">
-          <Tarjeta />
-          <Tarjeta />
-          <Tarjeta />
-          <Tarjeta />
+          {juegos &&
+            juegos.map((juego) => (
+              <Tarjeta
+                key={juego.id}
+                title={juego.title}
+                price={juego.price}
+                image={juego.image}
+              />
+            ))}
         </div>
       </section>
 
