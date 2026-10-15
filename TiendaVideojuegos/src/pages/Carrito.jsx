@@ -1,5 +1,5 @@
-import BarraNav from "../components/BarraNav";
-import Footer from "../components/Footer";
+
+
 import Card from "react-bootstrap/Card";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
@@ -7,7 +7,6 @@ import Row from "react-bootstrap/Row";
 function Carrito() {
   return (
     <>
-      <BarraNav />
       <h2>Carrito</h2>
       <div className="Tarjetas">
         <div>
@@ -44,7 +43,7 @@ function Carrito() {
           </Card>
         </div>
       </div>
-      <Footer />
+
     </>
   );
 }

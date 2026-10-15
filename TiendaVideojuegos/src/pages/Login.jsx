@@ -1,12 +1,9 @@
-import BarraNav from "../components/BarraNav";
-import Footer from "../components/Footer";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
 import Form from "react-bootstrap/Form";
 
 function Login() {
   return (
     <>
-      <BarraNav />
       <div className="Tarjetas">
         <div>
             <h2>Login</h2>
@@ -43,8 +40,6 @@ function Login() {
           <button>Registrarse</button>
         </div>
       </div>
-      
-      <Footer />
     </>
   );
 }

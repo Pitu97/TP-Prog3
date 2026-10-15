@@ -1,12 +1,12 @@
-import BarraNav from "../components/BarraNav";
+
 import Tarjeta from "../components/Tarjeta";
-import Footer from "../components/Footer";
+
 import Form from "react-bootstrap/Form";
 
 function Catalogo() {
   return (
     <>
-      <BarraNav />
+
       <h2>Catalogo</h2>
       <div style={{ backgroundColor: "darkblue", height: "200px" }}>
         <Form>
@@ -29,7 +29,7 @@ function Catalogo() {
           <Tarjeta />
         </div>
       </section>
-      <Footer />
+
     </>
   );
 }
