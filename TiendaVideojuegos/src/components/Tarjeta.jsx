@@ -7,7 +7,11 @@ function Tarjeta({ title, price, image }) {
     <Card
       style={{ width: "14rem", backgroundColor: colores.card, border: "none" }}
     >
-      <Card.Img variant="top" src={image} />
+      <Card.Img
+        variant="top"
+        src={image}
+        style={{ height: "200px", objectFit: "cover" }}
+      />
       <Card.Body>
         <Card.Title style={{ color: colores.textMain }}>{title}</Card.Title>
         <Card.Text style={{ color: colores.primary }}>

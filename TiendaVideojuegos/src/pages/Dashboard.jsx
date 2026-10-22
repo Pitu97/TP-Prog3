@@ -1,14 +1,11 @@
-
 import Carrusel from "../components/Carrusel";
 import Tarjeta from "../components/Tarjeta";
 import Categorias from "../components/Categorias";
 
-
 function Dashboard({ juegos }) {
   return (
     <>
-
-      <Carrusel />
+      <Carrusel juegos={juegos} />
       <section>
         <div className="Tarjetas">
           {juegos &&
@@ -27,7 +24,6 @@ function Dashboard({ juegos }) {
           <Categorias />
         </div>
       </section>
-
     </>
   );
 }
