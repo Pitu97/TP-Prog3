@@ -18,8 +18,42 @@ import NuevoJuego from "./components/NuevoJuego";
 function App() {
   const [juegos, setJuegos] = useState(listaJuegos);
 
+  const [carrito, setCarrito] = useState(() => {
+    return JSON.parse(localStorage.getItem("carrito") || "[]");
+  });
+
   const agregarJuego = (nuevoJuego) => {
     setJuegos((juegosActuales) => [...juegosActuales, nuevoJuego]);
+  };
+
+  const agregarAlCarrito = (juego) => {
+    setCarrito((carritoActual) => {
+      const existe = carritoActual.some(
+        (juegoCarrito) => juegoCarrito.id === juego.id
+      );
+
+      let carritoActualizado;
+
+      if (existe) {
+        carritoActualizado = carritoActual.map((juegoCarrito) =>
+          juegoCarrito.id === juego.id
+            ? {
+              ...juegoCarrito,
+              cantidad: (juegoCarrito.cantidad || 1) + 1,
+            }
+            : juegoCarrito
+        );
+      } else {
+        carritoActualizado = [
+          ...carritoActual,
+          { ...juego, cantidad: 1 },
+        ];
+      }
+
+      localStorage.setItem("carrito", JSON.stringify(carritoActualizado));
+
+      return carritoActualizado;
+    });
   };
 
   return (
@@ -43,18 +77,14 @@ function App() {
 
             <Route
               path="/catalogo"
-              element={<Catalogo juegos={juegos} />}
+              element={<Catalogo juegos={juegos} agregarAlCarrito={agregarAlCarrito} />}
             />
 
-            <Route path="/carrito" element={<Carrito />} />
+            <Route path="/carrito" element={<Carrito carrito={carrito} setCarrito={setCarrito} />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/detalleJuego" element={<DetalleJuego />} />
+            <Route path="/detalleJuego/:id" element={ <DetalleJuego juegos={juegos} agregarAlCarrito={agregarAlCarrito}/>} />
             <Route path="/perfil" element={<Perfil />} />
-
-            <Route
-              path="/NuevoJuego"
-              element={<NuevoJuego agregarJuego={agregarJuego} />}
-            />
+            <Route path="/NuevoJuego" element={<NuevoJuego agregarJuego={agregarJuego} />} />
           </Routes>
         </main>
 

@@ -3,7 +3,7 @@ import Tarjeta from "../components/Tarjeta";
 
 import Form from "react-bootstrap/Form";
 
-function Catalogo({ juegos }) {
+function Catalogo({ juegos, agregarAlCarrito }) {
   return (
     <>
 
@@ -27,9 +27,11 @@ function Catalogo({ juegos }) {
             juegos.map((juego) => (
               <Tarjeta
                 key={juego.id}
+                juego={juego}
                 title={juego.title}
                 price={juego.price}
                 image={juego.image}
+                agregarAlCarrito={agregarAlCarrito}
               />
             ))}
         </div>
