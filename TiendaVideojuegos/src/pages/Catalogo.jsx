@@ -3,46 +3,55 @@ import Tarjeta from "../components/Tarjeta";
 import Form from "react-bootstrap/Form";
 import { colores } from "../data/theme";
 
-function Catalogo({ juegos, agregarAlCarrito }) {
-  const [plataformas, setPlataformas] = useState([]);
-  const [generos, setGeneros] = useState([]);
+function Catalogo({ juegos }) {
+  const [busqueda, setBusqueda] = useState("");
+  const [plataformasSeleccionadas, setPlataformasSeleccionadas] = useState([]);
+  const [generosSeleccionados, setGenerosSeleccionados] = useState([]);
 
-  const listaPlataformas = ["PC", "PS5", "Switch", "Xbox"];
-  const listaGeneros = ["Action / RPG", "Cyberpunk", "RPG", "Action"];
+  const listaPlataformas = ["PC", "PS5", "Switch"];
+  const listaGeneros = ["Cyberpunk", "RPG", "Action"];
 
-  const togglePlataforma = (plat) => {
-    if (plataformas.includes(plat)) {
-      setPlataformas(plataformas.filter((item) => item !== plat));
+  const handlePlataformaChange = (plataforma) => {
+    if (plataformasSeleccionadas.includes(plataforma)) {
+      setPlataformasSeleccionadas(
+        plataformasSeleccionadas.filter((item) => item !== plataforma),
+      );
     } else {
-      setPlataformas([...plataformas, plat]);
+      setPlataformasSeleccionadas([...plataformasSeleccionadas, plataforma]);
     }
   };
 
-  const toggleGenero = (gen) => {
-    if (generos.includes(gen)) {
-      setGeneros(generos.filter((item) => item !== gen));
+  const handleGeneroChange = (genero) => {
+    if (generosSeleccionados.includes(genero)) {
+      setGenerosSeleccionados(
+        generosSeleccionados.filter((item) => item !== genero),
+      );
     } else {
-      setGeneros([...generos, gen]);
+      setGenerosSeleccionados([...generosSeleccionados, genero]);
     }
   };
 
   const juegosFiltrados = juegos
     ? juegos.filter((juego) => {
-        const pasaPlataforma =
-          plataformas.length === 0 || plataformas.includes(juego.platform);
+        const coincideNombre = juego.title
+          .toLowerCase()
+          .includes(busqueda.toLowerCase());
 
-        const pasaGenero =
-          generos.length === 0 || generos.includes(juego.genre);
+        const coincidePlataforma =
+          plataformasSeleccionadas.length === 0 ||
+          plataformasSeleccionadas.includes(juego.platform);
 
-        return pasaPlataforma && pasaGenero;
+        const coincideGenero =
+          generosSeleccionados.length === 0 ||
+          generosSeleccionados.includes(juego.genre);
+
+        return coincideNombre && coincidePlataforma && coincideGenero;
       })
     : [];
 
   return (
     <>
-      <h2 style={{ color: colores.textMain, margin: "20px" }}>
-        Catálogo
-      </h2>
+      <h2 style={{ color: colores.textMain, margin: "20px" }}>Catalogo</h2>
 
       <div
         style={{
@@ -54,35 +63,49 @@ function Catalogo({ juegos, agregarAlCarrito }) {
           color: colores.textMain,
         }}
       >
-        <Form className="d-flex gap-5">
-          <div>
-            <h6 style={{ color: colores.primary }}>Plataformas</h6>
+        <Form>
+          <Form.Group className="mb-3" controlId="searchGame">
+            <Form.Control
+              type="text"
+              placeholder="Buscar juego"
+              value={busqueda}
+              onChange={(event) => setBusqueda(event.target.value)}
+              style={{
+                backgroundColor: colores.background,
+                color: colores.textMain,
+                border: `1px solid ${colores.secondary}`,
+              }}
+            />
+          </Form.Group>
 
-            {listaPlataformas.map((plat) => (
-              <Form.Check
-                key={plat}
-                type="checkbox"
-                id={plat}
-                label={plat}
-                checked={plataformas.includes(plat)}
-                onChange={() => togglePlataforma(plat)}
-              />
-            ))}
-          </div>
+          <div className="d-flex gap-5 flex-wrap">
+            <div>
+              <h6 style={{ color: colores.primary }}>Plataformas</h6>
+              {listaPlataformas.map((plataforma, index) => (
+                <Form.Check
+                  key={`plat-${index}`}
+                  type="checkbox"
+                  id={`plat-${index}`}
+                  label={plataforma}
+                  checked={plataformasSeleccionadas.includes(plataforma)}
+                  onChange={() => handlePlataformaChange(plataforma)}
+                />
+              ))}
+            </div>
 
-          <div>
-            <h6 style={{ color: colores.primary }}>Categorías</h6>
-
-            {listaGeneros.map((gen) => (
-              <Form.Check
-                key={gen}
-                type="checkbox"
-                id={gen}
-                label={gen}
-                checked={generos.includes(gen)}
-                onChange={() => toggleGenero(gen)}
-              />
-            ))}
+            <div>
+              <h6 style={{ color: colores.primary }}>Categorias</h6>
+              {listaGeneros.map((genero, index) => (
+                <Form.Check
+                  key={`gen-${index}`}
+                  type="checkbox"
+                  id={`gen-${index}`}
+                  label={genero}
+                  checked={generosSeleccionados.includes(genero)}
+                  onChange={() => handleGeneroChange(genero)}
+                />
+              ))}
+            </div>
           </div>
         </Form>
       </div>
@@ -92,11 +115,9 @@ function Catalogo({ juegos, agregarAlCarrito }) {
           {juegosFiltrados.map((juego) => (
             <Tarjeta
               key={juego.id}
-              juego={juego}
               title={juego.title}
               price={juego.price}
               image={juego.image}
-              agregarAlCarrito={agregarAlCarrito}
             />
           ))}
         </div>
