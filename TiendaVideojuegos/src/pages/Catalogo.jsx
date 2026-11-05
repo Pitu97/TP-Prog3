@@ -3,8 +3,7 @@ import Tarjeta from "../components/Tarjeta";
 import Form from "react-bootstrap/Form";
 import { colores } from "../data/theme";
 
-function Catalogo({ juegos, agregarAlCarrito }) {
-  const [busqueda, setBusqueda] = useState("");
+function Catalogo({ juegos, agregarAlCarrito, busqueda, setBusqueda }) {
   const [plataformas, setPlataformas] = useState([]);
   const [generos, setGeneros] = useState([]);
 
@@ -31,7 +30,7 @@ function Catalogo({ juegos, agregarAlCarrito }) {
     ? juegos.filter((juego) => {
         const pasaNombre = juego.title
           .toLowerCase()
-          .includes(busqueda.toLowerCase());
+          .includes((busqueda || "").toLowerCase());
 
         const pasaPlataforma =
           plataformas.length === 0 || plataformas.includes(juego.platform);

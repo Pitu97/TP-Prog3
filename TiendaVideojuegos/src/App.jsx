@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import "./App.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
@@ -22,6 +21,8 @@ function App() {
     return JSON.parse(localStorage.getItem("carrito") || "[]");
   });
 
+  const [busqueda, setBusqueda] = useState("");
+
   const agregarJuego = (nuevoJuego) => {
     setJuegos((juegosActuales) => [...juegosActuales, nuevoJuego]);
   };
@@ -29,7 +30,7 @@ function App() {
   const agregarAlCarrito = (juego) => {
     setCarrito((carritoActual) => {
       const existe = carritoActual.some(
-        (juegoCarrito) => juegoCarrito.id === juego.id
+        (juegoCarrito) => juegoCarrito.id === juego.id,
       );
 
       let carritoActualizado;
@@ -38,16 +39,13 @@ function App() {
         carritoActualizado = carritoActual.map((juegoCarrito) =>
           juegoCarrito.id === juego.id
             ? {
-              ...juegoCarrito,
-              cantidad: (juegoCarrito.cantidad || 1) + 1,
-            }
-            : juegoCarrito
+                ...juegoCarrito,
+                cantidad: (juegoCarrito.cantidad || 1) + 1,
+              }
+            : juegoCarrito,
         );
       } else {
-        carritoActualizado = [
-          ...carritoActual,
-          { ...juego, cantidad: 1 },
-        ];
+        carritoActualizado = [...carritoActual, { ...juego, cantidad: 1 }];
       }
 
       localStorage.setItem("carrito", JSON.stringify(carritoActualizado));
@@ -66,25 +64,43 @@ function App() {
           color: colores.textMain,
         }}
       >
-        <BarraNav />
+        <BarraNav setBusqueda={setBusqueda} />
 
         <main className="flex-grow-1">
           <Routes>
+            <Route path="/" element={<Dashboard juegos={juegos} />} />
+
             <Route
-              path="/"
-              element={<Dashboard juegos={juegos} />}
+              path="/juegos"
+              element={
+                <Catalogo
+                  juegos={juegos}
+                  agregarAlCarrito={agregarAlCarrito}
+                  busqueda={busqueda}
+                  setBusqueda={setBusqueda}
+                />
+              }
             />
 
             <Route
-              path="/catalogo"
-              element={<Catalogo juegos={juegos} agregarAlCarrito={agregarAlCarrito} />}
+              path="/carrito"
+              element={<Carrito carrito={carrito} setCarrito={setCarrito} />}
             />
-
-            <Route path="/carrito" element={<Carrito carrito={carrito} setCarrito={setCarrito} />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/detalleJuego/:id" element={ <DetalleJuego juegos={juegos} agregarAlCarrito={agregarAlCarrito}/>} />
+            <Route
+              path="/detalleJuego/:id"
+              element={
+                <DetalleJuego
+                  juegos={juegos}
+                  agregarAlCarrito={agregarAlCarrito}
+                />
+              }
+            />
             <Route path="/perfil" element={<Perfil />} />
-            <Route path="/NuevoJuego" element={<NuevoJuego agregarJuego={agregarJuego} />} />
+            <Route
+              path="/NuevoJuego"
+              element={<NuevoJuego agregarJuego={agregarJuego} />}
+            />
           </Routes>
         </main>
 
