@@ -2,8 +2,11 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { colores } from "../data/theme";
+import { useTheme } from "../context/ThemeContext";
 
 function Footer() {
+  const { colores } = useTheme();
+
   return (
     <footer
       className="mt-5 py-4"

@@ -1,9 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
+import { useTheme } from "../context/ThemeContext";
 
 function Carrito({ carrito, setCarrito }) {
   const navigate = useNavigate();
+  const { colores } = useTheme();
 
   const aumentarCantidad = (id) => {
     const nuevoCarrito = carrito.map((juego) =>

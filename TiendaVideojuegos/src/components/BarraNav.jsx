@@ -5,12 +5,13 @@ import Form from "react-bootstrap/Form";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
-import { colores } from "../data/theme";
 import logo from "../assets/img/Logo_flix_limpio.png";
 import { useNavigate } from "react-router-dom";
+import { useTheme } from "../context/ThemeContext";
 
 function BarraNav() {
   const navigate = useNavigate();
+  const { modo, cambiarTema, colores } = useTheme();
 
   return (
     <Navbar
@@ -138,6 +139,11 @@ function BarraNav() {
             >
               Buscar
             </Button>
+
+            <Button onClick={cambiarTema} variant="outline-info">
+              {modo === "oscuro" ? "☀️" : "🌙"}
+            </Button>
+
           </Form>
         </Navbar.Collapse>
       </Container>

@@ -1,7 +1,9 @@
 import { useNavigate } from "react-router-dom";
+import { useTheme } from "../context/ThemeContext";
 
 function Perfil() {
   const navigate = useNavigate();
+  const { colores } = useTheme();
 
   const usuarioActivo = JSON.parse(
     localStorage.getItem("usuarioActivo") || "null"

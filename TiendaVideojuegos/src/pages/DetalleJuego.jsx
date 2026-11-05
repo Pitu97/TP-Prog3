@@ -1,10 +1,12 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { Button, Card } from "react-bootstrap";
 import Tarjeta from "../components/Tarjeta";
+import { useTheme } from "../context/ThemeContext";
 
 function DetalleJuego({ juegos, agregarAlCarrito }) {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { colores } = useTheme();
 
   const juego = juegos.find((juego) => juego.id.toString() === id);
 

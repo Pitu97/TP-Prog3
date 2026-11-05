@@ -1,10 +1,11 @@
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import { useNavigate } from "react-router-dom";
-import { colores } from "../data/theme";
+import { useTheme } from "../context/ThemeContext";
 
 function Tarjeta({ title, price, image, agregarAlCarrito, juego }) {
   const navigate = useNavigate();
+  const { colores } = useTheme();
 
   const verDetalle = () => {
     if (juego) {
