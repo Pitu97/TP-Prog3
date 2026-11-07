@@ -63,9 +63,19 @@ function Carrito({ carrito, setCarrito }) {
 
     const nuevaCompra = {
       id: Date.now(),
-      fecha: new Date().toLocaleDateString("es-AR"),
-      juegos: carrito.map((juego) => ({ ...juego })),
+      date: new Date().toISOString(),
       total: total,
+      status: "pending",
+      details: carrito.map((juego) => ({
+        gameId: juego.id,
+        quantity: juego.cantidad || 1,
+        unitPrice: obtenerPrecio(juego),
+        game: {
+          id: juego.id,
+          name: juego.name,
+          image: juego.image,
+        },
+      })),
     };
 
     comprasGuardadas[email] = [...comprasUsuario, nuevaCompra];

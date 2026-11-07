@@ -70,14 +70,14 @@ function Perfil() {
             key={compra.id}
             className="border rounded p-3 mb-3"
           >
-            <h5>Compra del {compra.fecha}</h5>
+            <h5>
+              Compra del {new Date(compra.date).toLocaleDateString("es-AR")}
+            </h5>
 
-            {compra.juegos.map((juego, index) => (
-              <p key={`${compra.id}-${juego.id}-${index}`}>
-                {juego.title} — Cantidad: {juego.cantidad || 1} —
-                ${(
-                  juego.price * (juego.cantidad || 1)
-                ).toFixed(2)}
+            {compra.details.map((detalle, index) => (
+              <p key={`${compra.id}-${detalle.gameId}-${index}`}>
+                {detalle.game.name} — Cantidad: {detalle.quantity} —
+                ${(detalle.unitPrice * detalle.quantity).toFixed(2)}
               </p>
             ))}
 
