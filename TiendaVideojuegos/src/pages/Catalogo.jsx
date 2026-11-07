@@ -5,11 +5,15 @@ import { useTheme } from "../context/ThemeContext";
 
 function Catalogo({ juegos, agregarAlCarrito, busqueda, setBusqueda }) {
   const [plataformas, setPlataformas] = useState([]);
-  const [generos, setGeneros] = useState([]);
+  const [categorias, setCategorias] = useState([]);
   const { colores } = useTheme();
 
-  const listaPlataformas = ["PC", "PS5", "Switch"];
-  const listaGeneros = ["Cyberpunk", "RPG", "Action"];
+  const listaPlataformas = ["PC", "PS5", "Switch", "Xbox"];
+  const listaCategorias = [
+    {id: 1, name: "Action"},
+    {id: 2, name: "RPG"},
+    {id: 3, name: "Cyberpunk"}
+  ];
 
   const togglePlataforma = (plat) => {
     if (plataformas.includes(plat)) {
@@ -19,27 +23,27 @@ function Catalogo({ juegos, agregarAlCarrito, busqueda, setBusqueda }) {
     }
   };
 
-  const toggleGenero = (gen) => {
-    if (generos.includes(gen)) {
-      setGeneros(generos.filter((item) => item !== gen));
+  const toggleCategoria = (id) => {
+    if (categorias.includes(id)) {
+      setCategorias(categorias.filter((item) => item !== id));
     } else {
-      setGeneros([...generos, gen]);
+      setCategorias([...categorias, id]);
     }
   };
 
   const juegosFiltrados = juegos
     ? juegos.filter((juego) => {
-        const pasaNombre = juego.title
+        const pasaNombre = (juego.name || "")
           .toLowerCase()
           .includes((busqueda || "").toLowerCase());
 
         const pasaPlataforma =
           plataformas.length === 0 || plataformas.includes(juego.platform);
 
-        const pasaGenero =
-          generos.length === 0 || generos.includes(juego.genre);
+        const pasaCategoria =
+          categorias.length === 0 || categorias.includes(Number(juego.categoryId));
 
-        return pasaNombre && pasaPlataforma && pasaGenero;
+        return pasaNombre && pasaPlataforma && pasaCategoria;
       })
     : [];
 
@@ -89,14 +93,14 @@ function Catalogo({ juegos, agregarAlCarrito, busqueda, setBusqueda }) {
 
             <div>
               <h6 style={{ color: colores.primary }}>Categorias</h6>
-              {listaGeneros.map((gen) => (
+              {listaCategorias.map((cat) => (
                 <Form.Check
-                  key={gen}
+                  key={cat.id}
                   type="checkbox"
-                  id={gen}
-                  label={gen}
-                  checked={generos.includes(gen)}
-                  onChange={() => toggleGenero(gen)}
+                  id={`categoria-${cat.id}`}
+                  label={cat.name}
+                  checked={categorias.includes(cat.id)}
+                  onChange={() => toggleCategoria(cat.id)}
                 />
               ))}
             </div>
@@ -118,7 +122,7 @@ function Catalogo({ juegos, agregarAlCarrito, busqueda, setBusqueda }) {
             <Tarjeta
               key={juego.id}
               juego={juego}
-              title={juego.title}
+              title={juego.name}
               price={juego.price}
               image={juego.image}
               agregarAlCarrito={agregarAlCarrito}

@@ -13,7 +13,7 @@ function Dashboard({ juegos, agregarAlCarrito }) {
               <Tarjeta
                 key={juego.id}
                 juego={juego}
-                title={juego.title}
+                title={juego.name}
                 price={juego.price}
                 image={juego.image}
                 agregarAlCarrito={agregarAlCarrito}
