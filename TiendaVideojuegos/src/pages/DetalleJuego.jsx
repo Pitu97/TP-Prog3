@@ -24,7 +24,7 @@ function DetalleJuego({ juegos, agregarAlCarrito }) {
   const juegosRelacionados = juegos
     .filter(
       (otroJuego) =>
-        otroJuego.id !== juego.id && otroJuego.genre === juego.genre
+        otroJuego.id !== juego.id && Number(otroJuego.categoryId) === Number(juego.categoryId)
     )
     .slice(0, 4);
 
@@ -38,7 +38,7 @@ function DetalleJuego({ juegos, agregarAlCarrito }) {
         Volver al catálogo
       </Button>
 
-      <h2>{juego.title}</h2>
+      <h2>{juego.name}</h2>
 
       <div
         className="d-flex flex-wrap justify-content-around align-items-center gap-4 p-4 rounded"
@@ -46,7 +46,7 @@ function DetalleJuego({ juegos, agregarAlCarrito }) {
       >
         <img
           src={juego.image}
-          alt={juego.title}
+          alt={juego.name}
           style={{
             width: "100%",
             maxWidth: "400px",
@@ -59,7 +59,7 @@ function DetalleJuego({ juegos, agregarAlCarrito }) {
         <div>
           <h3>Precio: ${Number(juego.price).toFixed(2)}</h3>
           <p>Plataforma: {juego.platform || "No especificada"}</p>
-          <p>Género: {juego.genre || "No especificado"}</p>
+          <p>Categoria: {juego.categoryId}</p>
 
           <Button
             variant="success"
@@ -88,7 +88,7 @@ function DetalleJuego({ juegos, agregarAlCarrito }) {
               <Tarjeta
                 key={otroJuego.id}
                 juego={otroJuego}
-                title={otroJuego.title}
+                title={otroJuego.name}
                 price={otroJuego.price}
                 image={otroJuego.image}
                 agregarAlCarrito={agregarAlCarrito}

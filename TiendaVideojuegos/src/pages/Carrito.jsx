@@ -6,6 +6,7 @@ import { useTheme } from "../context/ThemeContext";
 function Carrito({ carrito, setCarrito }) {
   const navigate = useNavigate();
   const { colores } = useTheme();
+  const obtenerPrecio = (juego) => Number(juego.price) || 0;
 
   const aumentarCantidad = (id) => {
     const nuevoCarrito = carrito.map((juego) =>
@@ -33,7 +34,7 @@ function Carrito({ carrito, setCarrito }) {
 
   const total = carrito.reduce(
     (acumulador, juego) =>
-      acumulador + juego.price * (juego.cantidad || 1),
+      acumulador + obtenerPrecio(juego) * (juego.cantidad || 1),
     0
   );
 
@@ -62,9 +63,19 @@ function Carrito({ carrito, setCarrito }) {
 
     const nuevaCompra = {
       id: Date.now(),
-      fecha: new Date().toLocaleDateString("es-AR"),
-      juegos: carrito.map((juego) => ({ ...juego })),
+      date: new Date().toISOString(),
       total: total,
+      status: "pending",
+      details: carrito.map((juego) => ({
+        gameId: juego.id,
+        quantity: juego.cantidad || 1,
+        unitPrice: obtenerPrecio(juego),
+        game: {
+          id: juego.id,
+          name: juego.name,
+          image: juego.image,
+        },
+      })),
     };
 
     comprasGuardadas[email] = [...comprasUsuario, nuevaCompra];
@@ -95,7 +106,7 @@ function Carrito({ carrito, setCarrito }) {
                 <div className="d-flex align-items-center p-3 gap-3">
                   <Card.Img
                     src={juego.image}
-                    alt={juego.title}
+                    alt={juego.name}
                     style={{
                       width: "120px",
                       height: "100px",
@@ -104,9 +115,9 @@ function Carrito({ carrito, setCarrito }) {
                   />
 
                   <div className="flex-grow-1">
-                    <Card.Title>{juego.title}</Card.Title>
+                    <Card.Title>{juego.name}</Card.Title>
 
-                    <p>Precio unitario: ${juego.price.toFixed(2)}</p>
+                    <p>Precio unitario: ${obtenerPrecio(juego).toFixed(2)}</p>
 
                     <div className="d-flex align-items-center gap-2">
                       <Button
@@ -128,7 +139,7 @@ function Carrito({ carrito, setCarrito }) {
                   </div>
 
                   <strong>
-                    ${(juego.price * (juego.cantidad || 1)).toFixed(2)}
+                    ${(obtenerPrecio(juego) * (juego.cantidad || 1)).toFixed(2)}
                   </strong>
                 </div>
               </Card>
