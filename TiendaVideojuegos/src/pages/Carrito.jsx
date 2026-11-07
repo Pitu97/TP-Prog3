@@ -6,7 +6,7 @@ import { useTheme } from "../context/ThemeContext";
 function Carrito({ carrito, setCarrito }) {
   const navigate = useNavigate();
   const { colores } = useTheme();
-  const precio = Number(juego.price) || 0;
+  const obtenerPrecio = (juego) => Number(juego.price) || 0;
 
   const aumentarCantidad = (id) => {
     const nuevoCarrito = carrito.map((juego) =>
@@ -34,7 +34,7 @@ function Carrito({ carrito, setCarrito }) {
 
   const total = carrito.reduce(
     (acumulador, juego) =>
-      acumulador + precio * (juego.cantidad || 1),
+      acumulador + obtenerPrecio(juego) * (juego.cantidad || 1),
     0
   );
 
@@ -107,7 +107,7 @@ function Carrito({ carrito, setCarrito }) {
                   <div className="flex-grow-1">
                     <Card.Title>{juego.name}</Card.Title>
 
-                    <p>Precio unitario: ${precio.toFixed(2)}</p>
+                    <p>Precio unitario: ${obtenerPrecio(juego).toFixed(2)}</p>
 
                     <div className="d-flex align-items-center gap-2">
                       <Button
@@ -129,7 +129,7 @@ function Carrito({ carrito, setCarrito }) {
                   </div>
 
                   <strong>
-                    ${(precio * (juego.cantidad || 1)).toFixed(2)}
+                    ${(obtenerPrecio(juego) * (juego.cantidad || 1)).toFixed(2)}
                   </strong>
                 </div>
               </Card>

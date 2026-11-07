@@ -8,7 +8,7 @@ function Catalogo({ juegos, agregarAlCarrito, busqueda, setBusqueda }) {
   const [categorias, setCategorias] = useState([]);
   const { colores } = useTheme();
 
-  const listaPlataformas = ["PC", "PS5", "Switch"];
+  const listaPlataformas = ["PC", "PS5", "Switch", "Xbox"];
   const listaCategorias = [
     {id: 1, name: "Action"},
     {id: 2, name: "RPG"},
@@ -33,7 +33,7 @@ function Catalogo({ juegos, agregarAlCarrito, busqueda, setBusqueda }) {
 
   const juegosFiltrados = juegos
     ? juegos.filter((juego) => {
-        const pasaNombre = juego.title
+        const pasaNombre = (juego.name || "")
           .toLowerCase()
           .includes((busqueda || "").toLowerCase());
 
