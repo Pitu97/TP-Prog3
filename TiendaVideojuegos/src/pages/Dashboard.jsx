@@ -2,7 +2,7 @@ import Carrusel from "../components/Carrusel";
 import Tarjeta from "../components/Tarjeta";
 import Categorias from "../components/Categorias";
 
-function Dashboard({ juegos }) {
+function Dashboard({ juegos, agregarAlCarrito }) {
   return (
     <>
       <Carrusel juegos={juegos} />
@@ -12,9 +12,11 @@ function Dashboard({ juegos }) {
             juegos.map((juego) => (
               <Tarjeta
                 key={juego.id}
+                juego={juego}
                 title={juego.title}
                 price={juego.price}
                 image={juego.image}
+                agregarAlCarrito={agregarAlCarrito}
               />
             ))}
         </div>

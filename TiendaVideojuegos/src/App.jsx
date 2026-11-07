@@ -72,7 +72,7 @@ function App() {
             <Routes>
               <Route
                 path="/"
-                element={<Dashboard juegos={juegos} />}
+                element={<Dashboard juegos={juegos} agregarAlCarrito={agregarAlCarrito} />}
               />
 
               <Route

@@ -13,7 +13,7 @@ function Catalogo({ juegos, agregarAlCarrito, busqueda, setBusqueda }) {
 
   const togglePlataforma = (plat) => {
     if (plataformas.includes(plat)) {
-      setPlataformas(plataformas.filter((item) => itemñ !== plat));
+      setPlataformas(plataformas.filter((item) => item !== plat));
     } else {
       setPlataformas([...plataformas, plat]);
     }
