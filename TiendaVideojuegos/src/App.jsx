@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "./App.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { ThemeProvider } from "./context/ThemeContext";
 
 import Dashboard from "./pages/Dashboard";
 import Catalogo from "./pages/Catalogo";
@@ -55,58 +56,42 @@ function App() {
   };
 
   return (
-    <BrowserRouter>
-      <div
-        className="d-flex flex-column min-vh-100"
-        style={{
-          backgroundColor: colores.background,
-          minHeight: "100vh",
-          color: colores.textMain,
-        }}
-      >
-        <BarraNav setBusqueda={setBusqueda} />
+    <ThemeProvider>
+      <BrowserRouter>
+        <div
+          className="d-flex flex-column min-vh-100"
+          style={{
+            backgroundColor: colores.background,
+            minHeight: "100vh",
+            color: colores.textMain,
+          }}
+        >
+          <BarraNav />
 
-        <main className="flex-grow-1">
-          <Routes>
-            <Route path="/" element={<Dashboard juegos={juegos} />} />
+          <main className="flex-grow-1">
+            <Routes>
+              <Route
+                path="/"
+                element={<Dashboard juegos={juegos} />}
+              />
 
-            <Route
-              path="/juegos"
-              element={
-                <Catalogo
-                  juegos={juegos}
-                  agregarAlCarrito={agregarAlCarrito}
-                  busqueda={busqueda}
-                  setBusqueda={setBusqueda}
-                />
-              }
-            />
+              <Route
+                path="/catalogo"
+                element={<Catalogo juegos={juegos} agregarAlCarrito={agregarAlCarrito} />}
+              />
 
-            <Route
-              path="/carrito"
-              element={<Carrito carrito={carrito} setCarrito={setCarrito} />}
-            />
-            <Route path="/login" element={<Login />} />
-            <Route
-              path="/detalleJuego/:id"
-              element={
-                <DetalleJuego
-                  juegos={juegos}
-                  agregarAlCarrito={agregarAlCarrito}
-                />
-              }
-            />
-            <Route path="/perfil" element={<Perfil />} />
-            <Route
-              path="/NuevoJuego"
-              element={<NuevoJuego agregarJuego={agregarJuego} />}
-            />
-          </Routes>
-        </main>
+              <Route path="/carrito" element={<Carrito carrito={carrito} setCarrito={setCarrito} />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/detalleJuego/:id" element={<DetalleJuego juegos={juegos} agregarAlCarrito={agregarAlCarrito} />} />
+              <Route path="/perfil" element={<Perfil />} />
+              <Route path="/NuevoJuego" element={<NuevoJuego agregarJuego={agregarJuego} />} />
+            </Routes>
+          </main>
 
-        <Footer />
-      </div>
-    </BrowserRouter>
+          <Footer />
+        </div>
+      </BrowserRouter>
+    </ThemeProvider>
   );
 }
 
