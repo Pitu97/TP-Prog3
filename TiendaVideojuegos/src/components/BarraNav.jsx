@@ -1,4 +1,3 @@
-
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
@@ -8,10 +7,18 @@ import NavDropdown from "react-bootstrap/NavDropdown";
 import logo from "../assets/img/Logo_flix_limpio.png";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
+import { useState } from "react";
 
-function BarraNav() {
+function BarraNav({ setBusqueda }) {
+  const [textoInput, setTextoInput] = useState("");
   const navigate = useNavigate();
   const { modo, cambiarTema, colores } = useTheme();
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    setBusqueda(textoInput);
+    navigate("/juegos");
+  };
 
   return (
     <Navbar
@@ -73,35 +80,6 @@ function BarraNav() {
               Agregar juego
             </Nav.Link>
 
-            <NavDropdown
-              title={
-                <span style={{ color: colores.textMain }}>
-                  Categorías
-                </span>
-              }
-              id="navbarScrollingDropdown"
-            >
-              <NavDropdown.Item
-                onClick={() => navigate("/catalogo")}
-              >
-                Acción
-              </NavDropdown.Item>
-
-              <NavDropdown.Item
-                onClick={() => navigate("/catalogo")}
-              >
-                Aventura
-              </NavDropdown.Item>
-
-              <NavDropdown.Divider />
-
-              <NavDropdown.Item
-                onClick={() => navigate("/catalogo")}
-              >
-                RPG
-              </NavDropdown.Item>
-            </NavDropdown>
-
             <Nav.Link
               onClick={() => navigate("/perfil")}
               style={{ color: colores.textMain, cursor: "pointer" }}
@@ -111,30 +89,27 @@ function BarraNav() {
           </Nav>
 
           <Form
-            className="d-flex"
-            onSubmit={(e) => {
-              e.preventDefault();
-              navigate("/catalogo");
-            }}
+            onSubmit={handleSubmit}
+            style={{ display: "flex", gap: "10px" }}
           >
             <Form.Control
               type="search"
-              placeholder="Buscar juegos..."
-              className="me-2"
-              aria-label="Buscar juegos"
+              placeholder="Buscar juego"
+              value={textoInput}
+              onChange={(e) => setTextoInput(e.target.value)}
               style={{
                 backgroundColor: colores.background,
                 color: colores.textMain,
-                border: `1px solid ${colores.textMuted}`,
+                border: `1px solid ${colores.secondary}`,
               }}
             />
-
             <Button
               type="submit"
               style={{
-                backgroundColor: colores.secondary,
-                color: colores.textMain,
+                backgroundColor: colores.primary,
+                color: colores.background,
                 border: "none",
+                fontWeight: "bold",
               }}
             >
               Buscar

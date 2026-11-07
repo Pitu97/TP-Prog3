@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import "./App.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
@@ -23,6 +22,8 @@ function App() {
     return JSON.parse(localStorage.getItem("carrito") || "[]");
   });
 
+  const [busqueda, setBusqueda] = useState("");
+
   const agregarJuego = (nuevoJuego) => {
     setJuegos((juegosActuales) => [...juegosActuales, nuevoJuego]);
   };
@@ -30,7 +31,7 @@ function App() {
   const agregarAlCarrito = (juego) => {
     setCarrito((carritoActual) => {
       const existe = carritoActual.some(
-        (juegoCarrito) => juegoCarrito.id === juego.id
+        (juegoCarrito) => juegoCarrito.id === juego.id,
       );
 
       let carritoActualizado;
@@ -39,16 +40,13 @@ function App() {
         carritoActualizado = carritoActual.map((juegoCarrito) =>
           juegoCarrito.id === juego.id
             ? {
-              ...juegoCarrito,
-              cantidad: (juegoCarrito.cantidad || 1) + 1,
-            }
-            : juegoCarrito
+                ...juegoCarrito,
+                cantidad: (juegoCarrito.cantidad || 1) + 1,
+              }
+            : juegoCarrito,
         );
       } else {
-        carritoActualizado = [
-          ...carritoActual,
-          { ...juego, cantidad: 1 },
-        ];
+        carritoActualizado = [...carritoActual, { ...juego, cantidad: 1 }];
       }
 
       localStorage.setItem("carrito", JSON.stringify(carritoActualizado));
