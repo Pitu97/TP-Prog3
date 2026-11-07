@@ -17,7 +17,7 @@ function BarraNav({ setBusqueda }) {
   const handleSubmit = (event) => {
     event.preventDefault();
     setBusqueda(textoInput);
-    navigate("/juegos");
+    navigate("/catalogo");
   };
 
   return (
@@ -118,7 +118,6 @@ function BarraNav({ setBusqueda }) {
             <Button onClick={cambiarTema} variant="outline-info">
               {modo === "oscuro" ? "☀️" : "🌙"}
             </Button>
-
           </Form>
         </Navbar.Collapse>
       </Container>
