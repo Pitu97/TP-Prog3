@@ -4,11 +4,11 @@ import { Form, Button, Container, Row, Col } from "react-bootstrap";
 
 function NuevoJuego({ agregarJuego }) {
   const [juego, setJuego] = useState({
-    title: "",
+    name: "",
     description: "",
     price: "",
     platform: "",
-    genre: "",
+    categoryId: "",
     image: ""
   });
 
@@ -24,8 +24,8 @@ function NuevoJuego({ agregarJuego }) {
 
     const nuevoJuego = {
       ...juego,
-      id: Date.now(),
-      price: Number(juego.price)
+      price: Number(juego.price),
+      categoryId: Number(juego.categoryId)
     };
 
     console.log("Juego enviado:", nuevoJuego);
@@ -35,11 +35,11 @@ function NuevoJuego({ agregarJuego }) {
     alert("Juego agregado correctamente");
 
     setJuego({
-      title: "",
+      name: "",
       description: "",
       price: "",
       platform: "",
-      genre: "",
+      categoryId: "",
       image: ""
     });
   };
@@ -57,8 +57,8 @@ function NuevoJuego({ agregarJuego }) {
               <Form.Label>Nombre del juego</Form.Label>
               <Form.Control
                 type="text"
-                name="title"
-                value={juego.title}
+                name="name"
+                value={juego.name}
                 onChange={handleChange}
                 required
               />
@@ -108,18 +108,15 @@ function NuevoJuego({ agregarJuego }) {
             <Form.Group className="mb-3">
               <Form.Label>Género</Form.Label>
               <Form.Select
-                name="genre"
-                value={juego.genre}
+                name="categoryId"
+                value={juego.categoryId}
                 onChange={handleChange}
                 required
               >
                 <option value="">Seleccionar género</option>
-                <option value="Action">Acción</option>
-                <option value="Adventure">Aventura</option>
-                <option value="RPG">RPG</option>
-                <option value="Strategy">Estrategia</option>
-                <option value="Horror">Terror</option>
-                <option value="Sports">Deportes</option>
+                <option value="1">Acción</option>
+                <option value="2">RPG</option>
+                <option value="3">Cyberpunk</option>
               </Form.Select>
             </Form.Group>
 
