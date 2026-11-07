@@ -10,7 +10,7 @@ function Carrusel({ juegos }) {
         <Carousel.Item key={juego.id}>
           <img
             src={juego.image}
-            alt={juego.title}
+            alt={juego.name}
             className="d-block w-100"
             style={{ height: "600px", objectFit: "cover" }}
           />
@@ -22,7 +22,7 @@ function Carrusel({ juegos }) {
             }}
           >
             <h3 style={{ color: colores.textMain, fontWeight: "bold" }}>
-              {juego.title}
+              {juego.name}
             </h3>
             <p
               style={{ color: colores.primary, fontSize: "1.2rem", margin: 0 }}
