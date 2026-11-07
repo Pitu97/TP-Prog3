@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ThemeProvider } from "./context/ThemeContext";
@@ -7,7 +7,7 @@ import Dashboard from "./pages/Dashboard";
 import Catalogo from "./pages/Catalogo";
 import Carrito from "./pages/Carrito";
 import Login from "./pages/Login";
-import { listaJuegos } from "./data/listaJuegos";
+import { obtenerJuegos } from "./services/api";
 import DetalleJuego from "./pages/DetalleJuego";
 import { colores } from "./data/theme";
 import Perfil from "./pages/Perfil";
@@ -16,13 +16,31 @@ import Footer from "./components/Footer";
 import NuevoJuego from "./components/NuevoJuego";
 
 function App() {
-  const [juegos, setJuegos] = useState(listaJuegos);
+  const [juegos, setJuegos] = useState([]);
+  const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState("");
 
   const [carrito, setCarrito] = useState(() => {
     return JSON.parse(localStorage.getItem("carrito") || "[]");
   });
 
   const [busqueda, setBusqueda] = useState("");
+
+  useEffect(() => {
+    const cargarJuegos = async () => {
+      try {
+        const datos = await obtenerJuegos();
+        setJuegos(datos);
+      } catch (error) {
+        console.error(error);
+        setError("No se pudieron cargar los videojuegos");
+      } finally {
+        setCargando(false);
+      }
+    };
+
+    cargarJuegos();
+  }, []);
 
   const agregarJuego = (nuevoJuego) => {
     setJuegos((juegosActuales) => [...juegosActuales, nuevoJuego]);
@@ -66,25 +84,54 @@ function App() {
             color: colores.textMain,
           }}
         >
-          <BarraNav setBusqueda={setBusqueda}/>
+          <BarraNav setBusqueda={setBusqueda} />
 
           <main className="flex-grow-1">
+            {cargando && <p>Cargando videojuegos...</p>}
+
+            {error && <p>{error}</p>}
             <Routes>
               <Route
                 path="/"
-                element={<Dashboard juegos={juegos} agregarAlCarrito={agregarAlCarrito} />}
+                element={
+                  <Dashboard
+                    juegos={juegos}
+                    agregarAlCarrito={agregarAlCarrito}
+                  />
+                }
               />
 
               <Route
                 path="/catalogo"
-                element={<Catalogo juegos={juegos} agregarAlCarrito={agregarAlCarrito} busqueda={busqueda} setBusqueda={setBusqueda}/>}
+                element={
+                  <Catalogo
+                    juegos={juegos}
+                    agregarAlCarrito={agregarAlCarrito}
+                    busqueda={busqueda}
+                    setBusqueda={setBusqueda}
+                  />
+                }
               />
 
-              <Route path="/carrito" element={<Carrito carrito={carrito} setCarrito={setCarrito} />} />
+              <Route
+                path="/carrito"
+                element={<Carrito carrito={carrito} setCarrito={setCarrito} />}
+              />
               <Route path="/login" element={<Login />} />
-              <Route path="/detalleJuego/:id" element={<DetalleJuego juegos={juegos} agregarAlCarrito={agregarAlCarrito} />} />
+              <Route
+                path="/detalleJuego/:id"
+                element={
+                  <DetalleJuego
+                    juegos={juegos}
+                    agregarAlCarrito={agregarAlCarrito}
+                  />
+                }
+              />
               <Route path="/perfil" element={<Perfil />} />
-              <Route path="/NuevoJuego" element={<NuevoJuego agregarJuego={agregarJuego} />} />
+              <Route
+                path="/NuevoJuego"
+                element={<NuevoJuego agregarJuego={agregarJuego} />}
+              />
             </Routes>
           </main>
 
