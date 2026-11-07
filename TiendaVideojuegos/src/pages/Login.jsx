@@ -7,15 +7,13 @@ function Login() {
   const navigate = useNavigate();
 
   const [usuario, setUsuario] = useState({
-    nombre: "",
-    direccion: "",
+    name: "",
     email: "",
     password: "",
   });
 
   const [registro, setRegistro] = useState({
-    nombre: "",
-    direccion: "",
+    name: "",
     email: "",
     password: "",
   });
@@ -76,8 +74,7 @@ function Login() {
     }
 
     const nuevoUsuario = {
-      nombre: registro.nombre,
-      direccion: registro.direccion,
+      name: registro.name,
       email: registro.email,
       password: registro.password,
     };
@@ -92,8 +89,7 @@ function Login() {
     alert("Registro exitoso. Ahora podés iniciar sesión.");
 
     setRegistro({
-      nombre: "",
-      direccion: "",
+      name: "",
       email: "",
       password: "",
     });
@@ -150,24 +146,9 @@ function Login() {
           >
             <Form.Control
               type="text"
-              name="nombre"
+              name="name"
               placeholder="Nombre"
-              value={registro.nombre}
-              onChange={handleChangeRegistro}
-              required
-            />
-          </FloatingLabel>
-
-          <FloatingLabel
-            controlId="registroDireccion"
-            label="Dirección"
-            className="mb-3"
-          >
-            <Form.Control
-              type="text"
-              name="direccion"
-              placeholder="Dirección"
-              value={registro.direccion}
+              value={registro.name}
               onChange={handleChangeRegistro}
               required
             />

@@ -51,7 +51,7 @@ function Perfil() {
         </div>
 
         <div>
-          <h2>{usuarioActivo.nombre}</h2>
+          <h2>{usuarioActivo.name}</h2>
           <p>{usuarioActivo.email}</p>
         </div>
 
