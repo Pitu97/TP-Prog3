@@ -17,7 +17,7 @@ function BarraNav({ setBusqueda }) {
   const handleSubmit = (event) => {
     event.preventDefault();
     setBusqueda(textoInput);
-    navigate("/juegos");
+    navigate("/catalogo");
   };
 
   return (

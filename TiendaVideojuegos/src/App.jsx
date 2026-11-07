@@ -66,7 +66,7 @@ function App() {
             color: colores.textMain,
           }}
         >
-          <BarraNav />
+          <BarraNav setBusqueda={setBusqueda}/>
 
           <main className="flex-grow-1">
             <Routes>
@@ -77,7 +77,7 @@ function App() {
 
               <Route
                 path="/catalogo"
-                element={<Catalogo juegos={juegos} agregarAlCarrito={agregarAlCarrito} />}
+                element={<Catalogo juegos={juegos} agregarAlCarrito={agregarAlCarrito} busqueda={busqueda} setBusqueda={setBusqueda}/>}
               />
 
               <Route path="/carrito" element={<Carrito carrito={carrito} setCarrito={setCarrito} />} />
