@@ -9,17 +9,22 @@ function Catalogo({ juegos, agregarAlCarrito, busqueda, setBusqueda }) {
   const generoRecibido = location.state?.generoInicial;
 
   const [plataformas, setPlataformas] = useState([]);
-  const [generos, setGeneros] = useState(
-    generoRecibido ? [generoRecibido] : [],
-  );
   const { colores } = useTheme();
 
   const listaPlataformas = ["PC", "PS5", "Switch", "Xbox"];
   const listaCategorias = [
-    {id: 1, name: "Action"},
-    {id: 2, name: "RPG"},
-    {id: 3, name: "Cyberpunk"}
+    { id: 1, name: "Action" },
+    { id: 2, name: "RPG" },
+    { id: 3, name: "Cyberpunk" },
   ];
+
+  const categoriaEncontrada = listaCategorias.find(
+    (cat) => cat.name === generoRecibido,
+  );
+
+  const [categorias, setCategorias] = useState(
+    categoriaEncontrada ? [categoriaEncontrada.id] : [],
+  );
 
   const togglePlataforma = (plat) => {
     if (plataformas.includes(plat)) {
@@ -47,7 +52,8 @@ function Catalogo({ juegos, agregarAlCarrito, busqueda, setBusqueda }) {
           plataformas.length === 0 || plataformas.includes(juego.platform);
 
         const pasaCategoria =
-          categorias.length === 0 || categorias.includes(Number(juego.categoryId));
+          categorias.length === 0 ||
+          categorias.includes(Number(juego.categoryId));
 
         return pasaNombre && pasaPlataforma && pasaCategoria;
       })
