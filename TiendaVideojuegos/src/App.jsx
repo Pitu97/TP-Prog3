@@ -66,25 +66,50 @@ function App() {
             color: colores.textMain,
           }}
         >
-          <BarraNav setBusqueda={setBusqueda}/>
+          <BarraNav setBusqueda={setBusqueda} />
 
           <main className="flex-grow-1">
             <Routes>
               <Route
                 path="/"
-                element={<Dashboard juegos={juegos} agregarAlCarrito={agregarAlCarrito} />}
+                element={
+                  <Dashboard
+                    juegos={juegos}
+                    agregarAlCarrito={agregarAlCarrito}
+                  />
+                }
               />
 
               <Route
                 path="/catalogo"
-                element={<Catalogo juegos={juegos} agregarAlCarrito={agregarAlCarrito} busqueda={busqueda} setBusqueda={setBusqueda}/>}
+                element={
+                  <Catalogo
+                    juegos={juegos}
+                    agregarAlCarrito={agregarAlCarrito}
+                    busqueda={busqueda}
+                    setBusqueda={setBusqueda}
+                  />
+                }
               />
-
-              <Route path="/carrito" element={<Carrito carrito={carrito} setCarrito={setCarrito} />} />
+              <Route
+                path="/carrito"
+                element={<Carrito carrito={carrito} setCarrito={setCarrito} />}
+              />
               <Route path="/login" element={<Login />} />
-              <Route path="/detalleJuego/:id" element={<DetalleJuego juegos={juegos} agregarAlCarrito={agregarAlCarrito} />} />
+              <Route
+                path="/detalleJuego/:id"
+                element={
+                  <DetalleJuego
+                    juegos={juegos}
+                    agregarAlCarrito={agregarAlCarrito}
+                  />
+                }
+              />
               <Route path="/perfil" element={<Perfil />} />
-              <Route path="/NuevoJuego" element={<NuevoJuego agregarJuego={agregarJuego} />} />
+              <Route
+                path="/NuevoJuego"
+                element={<NuevoJuego agregarJuego={agregarJuego} />}
+              />
             </Routes>
           </main>
 

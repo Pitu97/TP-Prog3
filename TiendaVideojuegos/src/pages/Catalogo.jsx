@@ -1,11 +1,17 @@
 import { useState } from "react";
 import Tarjeta from "../components/Tarjeta";
 import Form from "react-bootstrap/Form";
+import { useLocation } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
 
 function Catalogo({ juegos, agregarAlCarrito, busqueda, setBusqueda }) {
+  const location = useLocation();
+  const generoRecibido = location.state?.generoInicial;
+
   const [plataformas, setPlataformas] = useState([]);
-  const [categorias, setCategorias] = useState([]);
+  const [generos, setGeneros] = useState(
+    generoRecibido ? [generoRecibido] : [],
+  );
   const { colores } = useTheme();
 
   const listaPlataformas = ["PC", "PS5", "Switch", "Xbox"];

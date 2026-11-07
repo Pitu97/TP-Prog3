@@ -118,7 +118,6 @@ function BarraNav({ setBusqueda }) {
             <Button onClick={cambiarTema} variant="outline-info">
               {modo === "oscuro" ? "☀️" : "🌙"}
             </Button>
-
           </Form>
         </Navbar.Collapse>
       </Container>
