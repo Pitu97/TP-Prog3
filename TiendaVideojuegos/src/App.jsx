@@ -14,6 +14,7 @@ import Perfil from "./pages/Perfil";
 import BarraNav from "./components/BarraNav";
 import Footer from "./components/Footer";
 import NuevoJuego from "./components/NuevoJuego";
+import NuevaCategoria from "./components/NuevaCategoria";
 import { ToastContainer } from "react-toastify";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -91,9 +92,9 @@ function App() {
         carritoActualizado = carritoActual.map((juegoCarrito) =>
           juegoCarrito.id === juego.id
             ? {
-                ...juegoCarrito,
-                cantidad: (juegoCarrito.cantidad || 1) + 1,
-              }
+              ...juegoCarrito,
+              cantidad: (juegoCarrito.cantidad || 1) + 1,
+            }
             : juegoCarrito,
         );
       } else {
@@ -163,10 +164,9 @@ function App() {
                 <Route path="/perfil" element={<Perfil />} />
                 <Route
                   path="/carrito"
-                  element={
-                    <Carrito carrito={carrito} setCarrito={setCarrito} />
-                  }
+                  element={<Carrito carrito={carrito} setCarrito={setCarrito} />}
                 />
+
               </Route>
               <Route element={<Protected rolesPermitidos={[1, 2]} />}>
                 <Route
@@ -179,6 +179,18 @@ function App() {
                     />
                   }
                 />
+
+                <Route
+                  path="/NuevaCategoria"
+                  element={
+                    <NuevaCategoria
+                      categorias={categorias}
+                      setCategorias={setCategorias}
+                      cargandoCategorias={cargandoCategorias}
+                    />
+                  }
+                />
+
               </Route>
             </Routes>
             <ToastContainer
