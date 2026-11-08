@@ -1,14 +1,19 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Tarjeta from "../components/Tarjeta";
 import Form from "react-bootstrap/Form";
 import { useLocation } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
 
-function Catalogo({ juegos, categorias, agregarAlCarrito, busqueda, setBusqueda }) {
+function Catalogo({
+  juegos,
+  categorias = [],
+  agregarAlCarrito,
+  busqueda,
+  setBusqueda,
+}) {
   const [plataformas, setPlataformas] = useState([]);
-  const [categoriasSeleccionadas, setCategoriasSeleccionadas] = useState([]);
   const { colores } = useTheme();
-  
+
   const location = useLocation();
   const generoRecibido = location.state?.generoInicial;
 
@@ -17,6 +22,16 @@ function Catalogo({ juegos, categorias, agregarAlCarrito, busqueda, setBusqueda 
   const categoriaEncontrada = categorias.find(
     (cat) => cat.name === generoRecibido,
   );
+
+  const [categoriasSeleccionadas, setCategoriasSeleccionadas] = useState(
+    categoriaEncontrada ? [Number(categoriaEncontrada.id)] : [],
+  );
+
+  useEffect(() => {
+    if (categoriaEncontrada) {
+      setCategoriasSeleccionadas([Number(categoriaEncontrada.id)]);
+    }
+  }, [categoriaEncontrada]);
 
   const togglePlataforma = (plat) => {
     if (plataformas.includes(plat)) {
@@ -30,7 +45,7 @@ function Catalogo({ juegos, categorias, agregarAlCarrito, busqueda, setBusqueda 
     setCategoriasSeleccionadas((categoriasActuales) =>
       categoriasActuales.includes(id)
         ? categoriasActuales.filter((catId) => catId !== id)
-        : [...categoriasActuales, id]
+        : [...categoriasActuales, id],
     );
   };
 
@@ -44,7 +59,8 @@ function Catalogo({ juegos, categorias, agregarAlCarrito, busqueda, setBusqueda 
           plataformas.length === 0 || plataformas.includes(juego.platform);
 
         const pasaCategoria =
-          categoriasSeleccionadas.length === 0 || categoriasSeleccionadas.includes(Number(juego.categoryId));
+          categoriasSeleccionadas.length === 0 ||
+          categoriasSeleccionadas.includes(Number(juego.categoryId));
 
         return pasaNombre && pasaPlataforma && pasaCategoria;
       })

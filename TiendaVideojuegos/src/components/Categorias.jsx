@@ -1,52 +1,35 @@
 import { useNavigate } from "react-router-dom";
-import Button from "react-bootstrap/Button";
-import { colores } from "../data/theme";
+import { useTheme } from "../context/ThemeContext";
 
-function Categorias() {
+function Categorias({ categorias = [], cargando }) {
   const navigate = useNavigate();
+  const { colores } = useTheme();
 
-  const listaGeneros = ["Cyberpunk", "RPG", "Action"];
-
-  const irACategoria = (generoElegido) => {
-    navigate("/catalogo", {
-      state: { generoInicial: generoElegido },
-    });
-  };
+  if (cargando) {
+    return <p style={{ color: colores.textMuted }}>Cargando categorías...</p>;
+  }
 
   return (
-    <div style={{ margin: "40px 20px", textAlign: "center" }}>
-      <h3 style={{ color: colores.textMain, marginBottom: "25px" }}>
-        Explorar por Categoria
-      </h3>
-
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-around",
-          flexWrap: "wrap",
-          gap: "20px",
-        }}
-      >
-        {listaGeneros.map((gen) => (
-          <Button
-            key={gen}
-            onClick={() => irACategoria(gen)}
-            style={{
-              backgroundColor: colores.card,
-              color: colores.primary,
-              border: `2px solid ${colores.primary}`,
-              padding: "12px 30px",
-              borderRadius: "8px",
-              fontWeight: "bold",
-              fontSize: "1.1rem",
-              minWidth: "180px",
-              boxShadow: `0 0 10px ${colores.background}`,
-            }}
-          >
-            {gen}
-          </Button>
-        ))}
-      </div>
+    <div className="d-flex gap-3 flex-wrap my-4">
+      {categorias.map((cat) => (
+        <button
+          key={cat.id}
+          onClick={() =>
+            navigate("/catalogo", { state: { generoInicial: cat.name } })
+          }
+          className="btn"
+          style={{
+            backgroundColor: colores.card,
+            color: colores.textMain,
+            border: `1px solid ${colores.primary}`,
+            padding: "12px 24px",
+            fontSize: "1.1rem",
+            borderRadius: "8px",
+          }}
+        >
+          {cat.name}
+        </button>
+      ))}
     </div>
   );
 }
