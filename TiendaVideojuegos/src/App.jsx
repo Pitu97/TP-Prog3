@@ -15,10 +15,10 @@ import BarraNav from "./components/BarraNav";
 import Footer from "./components/Footer";
 import NuevoJuego from "./components/NuevoJuego";
 
-function App() {  
+function App() {
   const [juegos, setJuegos] = useState([]);
   const [cargando, setCargando] = useState(true);
-  
+
   const [categorias, setCategorias] = useState([]);
   const [cargandoCategorias, setCargandoCategorias] = useState(true);
 
@@ -117,6 +117,8 @@ function App() {
                   <Dashboard
                     juegos={juegos}
                     agregarAlCarrito={agregarAlCarrito}
+                    categorias={categorias}
+                    cargandoCategorias={cargandoCategorias}
                   />
                 }
               />
@@ -160,14 +162,16 @@ function App() {
               />
 
               </Route>
-              <Route
-                element={
-                  <Protected rolesPermitidos={[1, 2]} />
-                }
-              >
+              <Route element={<Protected rolesPermitidos={[1, 2]} />}>
                 <Route
                   path="/NuevoJuego"
-                  element={<NuevoJuego agregarJuego={agregarJuego} categorias={categorias} cargandoCategorias={cargandoCategorias} />}
+                  element={
+                    <NuevoJuego
+                      agregarJuego={agregarJuego}
+                      categorias={categorias}
+                      cargandoCategorias={cargandoCategorias}
+                    />
+                  }
                 />
               </Route>
             </Routes>
