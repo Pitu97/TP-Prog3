@@ -131,6 +131,7 @@ function Carrito({ carrito, setCarrito }) {
                       <Button
                         variant="secondary"
                         onClick={() => disminuirCantidad(juego.id)}
+                        disabled={comprando}
                       >
                         -
                       </Button>
@@ -140,6 +141,7 @@ function Carrito({ carrito, setCarrito }) {
                       <Button
                         variant="secondary"
                         onClick={() => aumentarCantidad(juego.id)}
+                        disabled={comprando}
                       >
                         +
                       </Button>
@@ -149,6 +151,7 @@ function Carrito({ carrito, setCarrito }) {
                       size="sm"
                       className="mt-2"
                       onClick={() => eliminarProducto(juego.id)}
+                      disabled={comprando}
                       >
                         Borrar
                     </Button>
@@ -176,6 +179,7 @@ function Carrito({ carrito, setCarrito }) {
               <Button
                 variant="danger"
                 onClick={limpiarCarrito}
+                disabled={comprando}
               >
                 Borrar todo
               </Button>
