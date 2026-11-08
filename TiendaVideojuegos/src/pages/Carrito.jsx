@@ -41,6 +41,26 @@ function Carrito({ carrito, setCarrito }) {
     0
   );
 
+  const eliminarProducto = (id) => {
+    const nuevoCarrito = carrito.filter((juego) => juego.id !== id);
+
+    setCarrito(nuevoCarrito);
+    localStorage.setItem("carrito", JSON.stringify(nuevoCarrito));
+  };
+
+  const limpiarCarrito = () => {
+    if (carrito.length === 0) return;
+
+    const confirmar = window.confirm(
+      "Estas seguro de que quieres eliminar todos los productos del carrito?"
+    );
+
+    if (!confirmar) return;
+
+    setCarrito([]);
+    localStorage.setItem("carrito", JSON.stringify([]));
+  };
+
   const comprar = async () => {
     const usuarioActivo = JSON.parse(
       localStorage.getItem("usuarioActivo") || "null"
@@ -111,6 +131,7 @@ function Carrito({ carrito, setCarrito }) {
                       <Button
                         variant="secondary"
                         onClick={() => disminuirCantidad(juego.id)}
+                        disabled={comprando}
                       >
                         -
                       </Button>
@@ -120,10 +141,20 @@ function Carrito({ carrito, setCarrito }) {
                       <Button
                         variant="secondary"
                         onClick={() => aumentarCantidad(juego.id)}
+                        disabled={comprando}
                       >
                         +
                       </Button>
                     </div>
+                    <Button
+                      variant="danger"
+                      size="sm"
+                      className="mt-2"
+                      onClick={() => eliminarProducto(juego.id)}
+                      disabled={comprando}
+                      >
+                        Borrar
+                    </Button>
                   </div>
 
                   <strong>
@@ -144,6 +175,13 @@ function Carrito({ carrito, setCarrito }) {
 
               <Button variant="success" onClick={comprar} disabled={comprando}>
                 {comprando ? "Procesando..." : "Confirmar compra"}
+              </Button>
+              <Button
+                variant="danger"
+                onClick={limpiarCarrito}
+                disabled={comprando}
+              >
+                Borrar todo
               </Button>
             </Card>
           </div>
