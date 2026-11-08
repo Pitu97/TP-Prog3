@@ -7,7 +7,7 @@ import Dashboard from "./pages/Dashboard";
 import Catalogo from "./pages/Catalogo";
 import Carrito from "./pages/Carrito";
 import Login from "./pages/Login";
-import { obtenerJuegos } from "./services/api";
+import { obtenerJuegos, obtenerCategorias } from "./services/api";
 import DetalleJuego from "./pages/DetalleJuego";
 import { colores } from "./data/theme";
 import Perfil from "./pages/Perfil";
@@ -18,6 +18,10 @@ import NuevoJuego from "./components/NuevoJuego";
 function App() {
   const [juegos, setJuegos] = useState([]);
   const [cargando, setCargando] = useState(true);
+  
+  const [categorias, setCategorias] = useState([]);
+  const [cargandoCategorias, setCargandoCategorias] = useState(true);
+
   const [error, setError] = useState("");
 
   const [carrito, setCarrito] = useState(() => {
@@ -40,6 +44,22 @@ function App() {
     };
 
     cargarJuegos();
+  }, []);
+
+  useEffect(() => {
+    const cargarCategorias = async () => {
+      try {
+        const datos = await obtenerCategorias();
+        setCategorias(datos);
+      } catch (error) {
+        console.error(error);
+        console.error("No se pudieron cargar las categorías");
+      } finally {
+        setCargandoCategorias(false);
+      }
+    };
+
+    cargarCategorias();
   }, []);
 
   const agregarJuego = (nuevoJuego) => {
@@ -106,6 +126,7 @@ function App() {
                 element={
                   <Catalogo
                     juegos={juegos}
+                    categorias={categorias}
                     agregarAlCarrito={agregarAlCarrito}
                     busqueda={busqueda}
                     setBusqueda={setBusqueda}
@@ -130,7 +151,7 @@ function App() {
               <Route path="/perfil" element={<Perfil />} />
               <Route
                 path="/NuevoJuego"
-                element={<NuevoJuego agregarJuego={agregarJuego} />}
+                element={<NuevoJuego agregarJuego={agregarJuego} categorias={categorias} cargandoCategorias={cargandoCategorias} />}
               />
             </Routes>
           </main>
