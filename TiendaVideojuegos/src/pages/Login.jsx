@@ -5,7 +5,31 @@ import FloatingLabel from "react-bootstrap/FloatingLabel";
 import Form from "react-bootstrap/Form";
 
 function Login() {
+  const usuariosPorDefecto = [
+    {
+      name: "Admin Flix",
+      email: "admin@flixgames.com",
+      password: "Admin123",
+      role: "admin",
+    },
+    {
+      name: "SuperAdmin Flix",
+      email: "super@flixgames.com",
+      password: "Super123",
+      role: "superadmin",
+    },
+  ];
+
   const navigate = useNavigate();
+
+  const obtenerUsuarios = () => {
+    const guardados = JSON.parse(localStorage.getItem("usuarios") || "[]");
+    if (guardados.length === 0) {
+      localStorage.setItem("usuarios", JSON.stringify(usuariosPorDefecto));
+      return usuariosPorDefecto;
+    }
+    return guardados;
+  };
 
   const [usuario, setUsuario] = useState({
     name: "",
@@ -44,7 +68,6 @@ function Login() {
 
       localStorage.setItem("token", datos.token);
       localStorage.setItem("usuarioActivo", JSON.stringify(datos.user));
-
       navigate("/perfil");
     } catch (error) {
       alert(error.message);
