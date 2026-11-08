@@ -19,3 +19,39 @@ export const obtenerCategorias = async () => {
 
   return await response.json();
 };
+
+export const registrarUsuario = async (usuario) => {
+  const response = await fetch(`${API_URL}/users/register`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(usuario),
+  });
+
+  const datos = await response.json();
+
+  if (!response.ok) {
+    throw new Error(datos.message || "Error al registrarse");
+  }
+
+  return datos;
+};
+
+export const iniciarSesion = async (credenciales) => {
+  const response = await fetch(`${API_URL}/users/login`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(credenciales),
+  });
+
+  const datos = await response.json();
+
+  if (!response.ok) {
+    throw new Error(datos.message || "Error al iniciar sesion");
+  }
+
+  return datos;
+};

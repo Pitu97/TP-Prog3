@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { registrarUsuario, iniciarSesion as iniciarSesionAPI } from "../services/api";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
 import Form from "react-bootstrap/Form";
 
@@ -32,67 +33,44 @@ function Login() {
     });
   };
 
-  const iniciarSesion = (e) => {
+  const iniciarSesion = async (e) => {
     e.preventDefault();
 
-    const usuariosGuardados = JSON.parse(
-      localStorage.getItem("usuarios") || "[]"
-    );
+    try {
+      const datos = await iniciarSesionAPI({
+        email: usuario.email,
+        password: usuario.password,
+      });
 
-    const usuarioEncontrado = usuariosGuardados.find(
-      (u) =>
-        u.email === usuario.email &&
-        u.password === usuario.password
-    );
-
-    if (usuarioEncontrado) {
-      localStorage.setItem(
-        "usuarioActivo",
-        JSON.stringify(usuarioEncontrado)
-      );
+      localStorage.setItem("token", datos.token);
+      localStorage.setItem("usuarioActivo", JSON.stringify(datos.user));
 
       navigate("/perfil");
-    } else {
-      alert("Email o contraseña incorrectos. Registrate primero.");
+    } catch (error) {
+      alert(error.message);
     }
   };
 
-  const registrarse = (e) => {
+  const registrarse = async (e) => {
     e.preventDefault();
 
-    const usuariosGuardados = JSON.parse(
-      localStorage.getItem("usuarios") || "[]"
-    );
+    try {
+      await registrarUsuario({
+        name: registro.name,
+        email: registro.email,
+        password: registro.password,
+      });
 
-    const emailExiste = usuariosGuardados.some(
-      (u) => u.email === registro.email
-    );
+      alert("Registro exitoso. Ahora podés iniciar sesión.");
 
-    if (emailExiste) {
-      alert("Ya existe un usuario registrado con ese email.");
-      return;
+      setRegistro({
+        name: "",
+        email: "",
+        password: "",
+      });
+    } catch (error) {
+      alert(error.message);
     }
-
-    const nuevoUsuario = {
-      name: registro.name,
-      email: registro.email,
-      password: registro.password,
-    };
-
-    usuariosGuardados.push(nuevoUsuario);
-
-    localStorage.setItem(
-      "usuarios",
-      JSON.stringify(usuariosGuardados)
-    );
-
-    alert("Registro exitoso. Ahora podés iniciar sesión.");
-
-    setRegistro({
-      name: "",
-      email: "",
-      password: "",
-    });
   };
 
   return (
