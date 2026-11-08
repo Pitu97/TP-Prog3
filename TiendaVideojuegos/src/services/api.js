@@ -38,6 +38,27 @@ export const obtenerUsuarios = async () => {
   return datos;
 };
 
+export const actualizarRolUsuario = async (id, roleId) => {
+  const token = localStorage.getItem("token");
+
+  const response = await fetch(`${API_URL}/admin/users/${id}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ roleId: Number(roleId) }),
+  });
+
+  const datos = await response.json();
+
+  if(!response.ok) {
+    throw new Error("Error al actualizar el rol");
+  }
+
+  return datos.user;
+}
+
 
 export const registrarUsuario = async (usuario) => {
   const response = await fetch(`${API_URL}/users/register`, {

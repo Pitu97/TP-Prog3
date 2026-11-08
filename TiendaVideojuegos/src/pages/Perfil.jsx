@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
 import Table from "react-bootstrap/Table";
 import Form from "react-bootstrap/Form";
-import { obtenerUsuarios } from "../services/api";
+import { obtenerUsuarios, actualizarRolUsuario } from "../services/api";
 
 function Perfil() {
   const navigate = useNavigate();
@@ -12,6 +12,8 @@ function Perfil() {
   const usuarioActivo = JSON.parse(
     localStorage.getItem("usuarioActivo") || "null",
   );
+
+  const [actualizandoRol, setActualizandoRol] = useState(null);
 
   const [usuarios, setUsuarios] = useState([]);
   const [cargandoUsuarios, setCargandoUsuarios] = useState(true);
@@ -43,23 +45,25 @@ function Perfil() {
     navigate("/login");
   };
 
-  /*const [listaUsuarios, setListaUsuarios] = useState(
-    JSON.parse(localStorage.getItem("usuarios") || "[]"),
-  );*/
+  const cambiarRolUsuario = async (idUsuario, nuevoRol) => {
+    try {
+      setActualizandoRol(idUsuario);
 
-  const cambiarRolUsuario = (emailUsuario, nuevoRol) => {
-    const usuariosActualizados = listaUsuarios.map((u) =>
-      u.email === emailUsuario ? { ...u, role: nuevoRol } : u,
-    );
-
-    setListaUsuarios(usuariosActualizados);
-    localStorage.setItem("usuarios", JSON.stringify(usuariosActualizados));
-
-    if (usuarioActivo.email === emailUsuario) {
-      localStorage.setItem(
-        "usuarioActivo",
-        JSON.stringify({ ...usuarioActivo, role: nuevoRol }),
+      const usuarioActualizado = await actualizarRolUsuario(
+        idUsuario,
+        nuevoRol,
       );
+
+      setUsuarios((usuariosActuales) =>
+        usuariosActuales.map((u) =>
+          u.id === usuarioActualizado.id ? usuarioActualizado : u,
+        ),
+      );
+    } catch (error) {
+      console.error(error);
+      alert(error.message);
+    } finally {
+      setActualizandoRol(null);
     }
   };
 
@@ -151,51 +155,57 @@ function Perfil() {
               </tr>
             </thead>
             <tbody>
-              {cargandoUsuarios
-                ? (<tr>
+              {cargandoUsuarios ? (
+                <tr>
                   <td>"Cargando usuarios..."</td>
-                </tr>)
-                : errorUsuarios ? (
-                  <tr>
-                    <td colSpan={4}>{errorUsuarios}</td>
-                  </tr>
-                ) : usuarios.length === 0 ? (
-                  <tr>
-                    <td colSpan={4}>No hay usuarios registrados</td>
-                  </tr>
-                ) : (
-                  usuarios.map((u) => (
-                    <tr key={u.email}>
-                      <td>{u.name}</td>
-                      <td>{u.email}</td>
-                      <td
-                        style={{ color: colores.secondary, fontWeight: "bold" }}
+                </tr>
+              ) : errorUsuarios ? (
+                <tr>
+                  <td colSpan={4}>{errorUsuarios}</td>
+                </tr>
+              ) : usuarios.length === 0 ? (
+                <tr>
+                  <td colSpan={4}>No hay usuarios registrados</td>
+                </tr>
+              ) : (
+                usuarios.map((u) => (
+                  <tr key={u.email}>
+                    <td>{u.name}</td>
+                    <td>{u.email}</td>
+                    <td
+                      style={{ color: colores.secondary, fontWeight: "bold" }}
+                    >
+                      {u.roleId === 1
+                        ? "superadmin"
+                        : u.roleId === 2
+                          ? "admin"
+                          : "client"}
+                    </td>
+                    <td>
+                      <Form.Select
+                        size="sm"
+                        value={u.roleId}
+                        onChange={(e) =>
+                          cambiarRolUsuario(u.id, e.target.value)
+                        }
+                        disabled={
+                          u.email === usuarioActivo.email ||
+                          actualizandoRol === u.id
+                        }
+                        style={{
+                          backgroundColor: colores.background,
+                          color: colores.textMain,
+                          border: `1px solid ${colores.secondary}`,
+                        }}
                       >
-                        {u.roleId || 3}
-                      </td>
-                      <td>
-                        <Form.Select
-                          size="sm"
-                          value={u.roleId || 3}
-                          onChange={(e) =>
-                            cambiarRolUsuario(u.email, e.target.value)
-                          }
-                          disabled={u.email === usuarioActivo.email}
-                          style={{
-                            backgroundColor: colores.background,
-                            color: colores.textMain,
-                            border: `1px solid ${colores.secondary}`,
-                          }}
-                        >
-                          <option value="3">user</option>
-                          <option value="2">admin</option>
-                          <option value="1">superadmin</option>
-                        </Form.Select>
-                      </td>
-                    </tr>
-                  ))
-                )
-              } 
+                        <option value={3}>client</option>
+                        <option value={2}>admin</option>
+                        <option value={1}>superadmin</option>
+                      </Form.Select>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </Table>
         </div>
