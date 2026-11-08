@@ -1,12 +1,15 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
+import Table from "react-bootstrap/Table";
+import Form from "react-bootstrap/Form";
 
 function Perfil() {
   const navigate = useNavigate();
   const { colores } = useTheme();
 
   const usuarioActivo = JSON.parse(
-    localStorage.getItem("usuarioActivo") || "null"
+    localStorage.getItem("usuarioActivo") || "null",
   );
 
   const cerrarSesion = () => {
@@ -14,20 +17,38 @@ function Perfil() {
     navigate("/login");
   };
 
+  const [listaUsuarios, setListaUsuarios] = useState(
+    JSON.parse(localStorage.getItem("usuarios") || "[]"),
+  );
+
+  const cambiarRolUsuario = (emailUsuario, nuevoRol) => {
+    const usuariosActualizados = listaUsuarios.map((u) =>
+      u.email === emailUsuario ? { ...u, role: nuevoRol } : u,
+    );
+
+    setListaUsuarios(usuariosActualizados);
+    localStorage.setItem("usuarios", JSON.stringify(usuariosActualizados));
+
+    if (usuarioActivo.email === emailUsuario) {
+      localStorage.setItem(
+        "usuarioActivo",
+        JSON.stringify({ ...usuarioActivo, role: nuevoRol }),
+      );
+    }
+  };
+
   if (!usuarioActivo) {
     return (
       <div className="container mt-4">
         <h2>Tenés que iniciar sesión para ver tu perfil.</h2>
 
-        <button onClick={() => navigate("/login")}>
-          Ir al login
-        </button>
+        <button onClick={() => navigate("/login")}>Ir al login</button>
       </div>
     );
   }
 
   const historialCompras = JSON.parse(
-    localStorage.getItem("historialCompras") || "{}"
+    localStorage.getItem("historialCompras") || "{}",
   );
 
   const compras = historialCompras[usuarioActivo.email] || [];
@@ -55,9 +76,7 @@ function Perfil() {
           <p>{usuarioActivo.email}</p>
         </div>
 
-        <button onClick={cerrarSesion}>
-          Cerrar sesión
-        </button>
+        <button onClick={cerrarSesion}>Cerrar sesión</button>
       </div>
 
       <h2>Historial de compras</h2>
@@ -66,24 +85,77 @@ function Perfil() {
         <p>Todavía no realizaste ninguna compra.</p>
       ) : (
         compras.map((compra) => (
-          <div
-            key={compra.id}
-            className="border rounded p-3 mb-3"
-          >
+          <div key={compra.id} className="border rounded p-3 mb-3">
             <h5>
               Compra del {new Date(compra.date).toLocaleDateString("es-AR")}
             </h5>
 
             {compra.details.map((detalle, index) => (
               <p key={`${compra.id}-${detalle.gameId}-${index}`}>
-                {detalle.game.name} — Cantidad: {detalle.quantity} —
-                ${(detalle.unitPrice * detalle.quantity).toFixed(2)}
+                {detalle.game.name} — Cantidad: {detalle.quantity} — $
+                {(detalle.unitPrice * detalle.quantity).toFixed(2)}
               </p>
             ))}
 
             <h5>Total: ${compra.total.toFixed(2)}</h5>
           </div>
         ))
+      )}
+
+      {/* panel del superadm */}
+      {usuarioActivo.role === "superadmin" && (
+        <div
+          className="mt-5 p-4 rounded"
+          style={{
+            backgroundColor: colores.card,
+            border: `1px solid ${colores.primary}`,
+          }}
+        >
+          <h3 style={{ color: colores.primary, marginBottom: "20px" }}>
+            Gestion de Usuarios
+          </h3>
+
+          <Table striped bordered hover variant="dark" responsive>
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Email</th>
+                <th>Rol Actual</th>
+                <th>Cambiar Rol</th>
+              </tr>
+            </thead>
+            <tbody>
+              {listaUsuarios.map((u) => (
+                <tr key={u.email}>
+                  <td>{u.name}</td>
+                  <td>{u.email}</td>
+                  <td style={{ color: colores.secondary, fontWeight: "bold" }}>
+                    {u.role || "user"}
+                  </td>
+                  <td>
+                    <Form.Select
+                      size="sm"
+                      value={u.role || "user"}
+                      onChange={(e) =>
+                        cambiarRolUsuario(u.email, e.target.value)
+                      }
+                      disabled={u.email === usuarioActivo.email}
+                      style={{
+                        backgroundColor: colores.background,
+                        color: colores.textMain,
+                        border: `1px solid ${colores.secondary}`,
+                      }}
+                    >
+                      <option value="user">user</option>
+                      <option value="admin">admin</option>
+                      <option value="superadmin">superadmin</option>
+                    </Form.Select>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </div>
       )}
     </div>
   );

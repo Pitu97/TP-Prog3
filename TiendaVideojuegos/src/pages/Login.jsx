@@ -4,7 +4,31 @@ import FloatingLabel from "react-bootstrap/FloatingLabel";
 import Form from "react-bootstrap/Form";
 
 function Login() {
+  const usuariosPorDefecto = [
+    {
+      name: "Admin Flix",
+      email: "admin@flixgames.com",
+      password: "Admin123",
+      role: "admin",
+    },
+    {
+      name: "SuperAdmin Flix",
+      email: "super@flixgames.com",
+      password: "Super123",
+      role: "superadmin",
+    },
+  ];
+
   const navigate = useNavigate();
+
+  const obtenerUsuarios = () => {
+    const guardados = JSON.parse(localStorage.getItem("usuarios") || "[]");
+    if (guardados.length === 0) {
+      localStorage.setItem("usuarios", JSON.stringify(usuariosPorDefecto));
+      return usuariosPorDefecto;
+    }
+    return guardados;
+  };
 
   const [usuario, setUsuario] = useState({
     name: "",
@@ -35,22 +59,19 @@ function Login() {
   const iniciarSesion = (e) => {
     e.preventDefault();
 
-    const usuariosGuardados = JSON.parse(
-      localStorage.getItem("usuarios") || "[]"
-    );
+    const usuariosGuardados = obtenerUsuarios();
 
     const usuarioEncontrado = usuariosGuardados.find(
-      (u) =>
-        u.email === usuario.email &&
-        u.password === usuario.password
+      (u) => u.email === usuario.email && u.password === usuario.password,
     );
 
     if (usuarioEncontrado) {
-      localStorage.setItem(
-        "usuarioActivo",
-        JSON.stringify(usuarioEncontrado)
-      );
+      const usuarioConRol = {
+        ...usuarioEncontrado,
+        role: usuarioEncontrado.role || "user",
+      };
 
+      localStorage.setItem("usuarioActivo", JSON.stringify(usuarioConRol));
       navigate("/perfil");
     } else {
       alert("Email o contraseña incorrectos. Registrate primero.");
@@ -60,12 +81,10 @@ function Login() {
   const registrarse = (e) => {
     e.preventDefault();
 
-    const usuariosGuardados = JSON.parse(
-      localStorage.getItem("usuarios") || "[]"
-    );
+    const usuariosGuardados = obtenerUsuarios();
 
     const emailExiste = usuariosGuardados.some(
-      (u) => u.email === registro.email
+      (u) => u.email === registro.email,
     );
 
     if (emailExiste) {
@@ -77,17 +96,13 @@ function Login() {
       name: registro.name,
       email: registro.email,
       password: registro.password,
+      role: "user",
     };
 
     usuariosGuardados.push(nuevoUsuario);
-
-    localStorage.setItem(
-      "usuarios",
-      JSON.stringify(usuariosGuardados)
-    );
+    localStorage.setItem("usuarios", JSON.stringify(usuariosGuardados));
 
     alert("Registro exitoso. Ahora podés iniciar sesión.");
-
     setRegistro({
       name: "",
       email: "",
