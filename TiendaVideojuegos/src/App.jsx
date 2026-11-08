@@ -2,7 +2,7 @@ import { useState } from "react";
 import "./App.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ThemeProvider } from "./context/ThemeContext";
-
+import Protected from "./components/Protected";
 import Dashboard from "./pages/Dashboard";
 import Catalogo from "./pages/Catalogo";
 import Carrito from "./pages/Carrito";
@@ -80,6 +80,18 @@ function App() {
                 }
               />
 
+              <Route path="/login" element={<Login />} />
+
+              <Route
+                path="/detalleJuego/:id"
+                element={
+                  <DetalleJuego
+                    juegos={juegos}
+                    agregarAlCarrito={agregarAlCarrito}
+                  />
+                }
+              />
+
               <Route
                 path="/catalogo"
                 element={
@@ -91,25 +103,31 @@ function App() {
                   />
                 }
               />
+
               <Route
                 path="/carrito"
                 element={<Carrito carrito={carrito} setCarrito={setCarrito} />}
               />
-              <Route path="/login" element={<Login />} />
+
               <Route
-                path="/detalleJuego/:id"
                 element={
-                  <DetalleJuego
-                    juegos={juegos}
-                    agregarAlCarrito={agregarAlCarrito}
+                  <Protected
+                    rolesPermitidos={["user", "admin", "superadmin"]}
                   />
                 }
-              />
-              <Route path="/perfil" element={<Perfil />} />
+              >
+                <Route path="/perfil" element={<Perfil />} />
+              </Route>
               <Route
-                path="/NuevoJuego"
-                element={<NuevoJuego agregarJuego={agregarJuego} />}
-              />
+                element={
+                  <Protected rolesPermitidos={["admin", "superadmin"]} />
+                }
+              >
+                <Route
+                  path="/NuevoJuego"
+                  element={<NuevoJuego agregarJuego={agregarJuego} />}
+                />
+              </Route>
             </Routes>
           </main>
 

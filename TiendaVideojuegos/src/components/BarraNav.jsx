@@ -5,14 +5,19 @@ import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import logo from "../assets/img/Logo_flix_limpio.png";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
 import { useState } from "react";
 
 function BarraNav({ setBusqueda }) {
   const [textoInput, setTextoInput] = useState("");
   const navigate = useNavigate();
+  const location = useLocation();
   const { modo, cambiarTema, colores } = useTheme();
+
+  const usuarioActivo = JSON.parse(localStorage.getItem("usuarioActivo"));
+  const rol = usuarioActivo?.role;
+  const esAdmin = rol === "admin" || rol === "superadmin";
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -73,19 +78,37 @@ function BarraNav({ setBusqueda }) {
               Carrito
             </Nav.Link>
 
-            <Nav.Link
-              onClick={() => navigate("/NuevoJuego")}
-              style={{ color: colores.textMain, cursor: "pointer" }}
-            >
-              Agregar juego
-            </Nav.Link>
+            {esAdmin && (
+              <Nav.Link
+                onClick={() => navigate("/NuevoJuego")}
+                style={{
+                  color: colores.textMain,
+                  cursor: "pointer",
+                }}
+              >
+                Agregar juego
+              </Nav.Link>
+            )}
 
-            <Nav.Link
-              onClick={() => navigate("/perfil")}
-              style={{ color: colores.textMain, cursor: "pointer" }}
-            >
-              Usuario
-            </Nav.Link>
+            {usuarioActivo ? (
+              <Nav.Link
+                onClick={() => navigate("/perfil")}
+                style={{ color: colores.textMain, cursor: "pointer" }}
+              >
+                {usuarioActivo.name} ({rol})
+              </Nav.Link>
+            ) : (
+              <Nav.Link
+                onClick={() => navigate("/login")}
+                style={{
+                  color: colores.secondary,
+                  fontWeight: "bold",
+                  cursor: "pointer",
+                }}
+              >
+                Iniciar sesión
+              </Nav.Link>
+            )}
           </Nav>
 
           <Form
