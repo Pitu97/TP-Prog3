@@ -2,11 +2,14 @@ import { useNavigate } from "react-router-dom";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import { useTheme } from "../context/ThemeContext";
+import { crearCompra } from "../services/api";
+import { useState } from "react";
 
 function Carrito({ carrito, setCarrito }) {
   const navigate = useNavigate();
   const { colores } = useTheme();
   const obtenerPrecio = (juego) => Number(juego.price) || 0;
+  const [comprando, setComprando] = useState(false);
 
   const aumentarCantidad = (id) => {
     const nuevoCarrito = carrito.map((juego) =>
@@ -38,7 +41,7 @@ function Carrito({ carrito, setCarrito }) {
     0
   );
 
-  const comprar = () => {
+  const comprar = async () => {
     const usuarioActivo = JSON.parse(
       localStorage.getItem("usuarioActivo") || "null"
     );
@@ -54,42 +57,27 @@ function Carrito({ carrito, setCarrito }) {
       return;
     }
 
-    const comprasGuardadas = JSON.parse(
-      localStorage.getItem("historialCompras") || "{}"
-    );
+    try {
+      setComprando(true);
 
-    const email = usuarioActivo.email;
-    const comprasUsuario = comprasGuardadas[email] || [];
-
-    const nuevaCompra = {
-      id: Date.now(),
-      date: new Date().toISOString(),
-      total: total,
-      status: "pending",
-      details: carrito.map((juego) => ({
+      const items = carrito.map((juego) => ({
         gameId: juego.id,
-        quantity: juego.cantidad || 1,
-        unitPrice: obtenerPrecio(juego),
-        game: {
-          id: juego.id,
-          name: juego.name,
-          image: juego.image,
-        },
-      })),
-    };
+        quantity: juego.cantidad || 1,  
+      }));
 
-    comprasGuardadas[email] = [...comprasUsuario, nuevaCompra];
+      await crearCompra(items);
 
-    localStorage.setItem(
-      "historialCompras",
-      JSON.stringify(comprasGuardadas)
-    );
+      setCarrito([]);
+      localStorage.setItem("carrito", JSON.stringify([]));
 
-    setCarrito([]);
-    localStorage.setItem("carrito", JSON.stringify([]));
-
-    alert("¡Compra realizada correctamente!");
-    navigate("/perfil");
+      alert("Compra realizada correctamente");
+      navigate("/perfil");
+    } catch (error) {
+      console.error(error);
+      alert(error.message);
+    } finally {
+      setComprando(false);
+    }
   };
 
   return (
@@ -154,8 +142,8 @@ function Carrito({ carrito, setCarrito }) {
                 Total: <strong>${total.toFixed(2)}</strong>
               </Card.Text>
 
-              <Button variant="success" onClick={comprar}>
-                Confirmar compra
+              <Button variant="success" onClick={comprar} disabled={comprando}>
+                {comprando ? "Procesando..." : "Confirmar compra"}
               </Button>
             </Card>
           </div>
