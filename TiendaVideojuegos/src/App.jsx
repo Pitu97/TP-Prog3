@@ -147,11 +147,6 @@ function App() {
               />
 
               <Route
-                path="/carrito"
-                element={<Carrito carrito={carrito} setCarrito={setCarrito} />}
-              />
-
-              <Route
                 element={
                   <Protected
                     rolesPermitidos={[3, 2, 1]}
@@ -159,6 +154,11 @@ function App() {
                 }
               >
                 <Route path="/perfil" element={<Perfil />} />
+                <Route
+                path="/carrito"
+                element={<Carrito carrito={carrito} setCarrito={setCarrito} />}
+              />
+
               </Route>
               <Route
                 element={

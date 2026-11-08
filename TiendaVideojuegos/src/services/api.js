@@ -95,3 +95,42 @@ export const iniciarSesion = async (credenciales) => {
 
   return datos;
 };
+
+export const crearCompra = async (items) => {
+  const token = localStorage.getItem("token");
+
+  const response = await fetch(`${API_URL}/purchases`, {
+    method: "POST",
+    headers: {
+      "Content-Type":"application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ items }),
+  });
+
+  const datos = await response.json();
+
+  if (!response.ok) {
+    throw new Error("Error al realizar la compra");
+  }
+
+  return datos.purchase;
+};
+
+export const obtenerHistorialCompras = async () => {
+  const token = localStorage.getItem("token");
+
+  const response = await fetch(`${API_URL}/purchases`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const datos = await response.json();
+
+  if(!response.ok) {
+    throw new Error("Error al obtener el historial");
+  }
+
+  return datos;
+};

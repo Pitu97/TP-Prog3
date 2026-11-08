@@ -3,7 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
 import Table from "react-bootstrap/Table";
 import Form from "react-bootstrap/Form";
-import { obtenerUsuarios, actualizarRolUsuario } from "../services/api";
+import {
+  obtenerUsuarios,
+  actualizarRolUsuario,
+  obtenerHistorialCompras,
+} from "../services/api";
 
 function Perfil() {
   const navigate = useNavigate();
@@ -18,6 +22,10 @@ function Perfil() {
   const [usuarios, setUsuarios] = useState([]);
   const [cargandoUsuarios, setCargandoUsuarios] = useState(true);
   const [errorUsuarios, setErrorUsuarios] = useState("");
+
+  const [compras, setCompras] = useState([]);
+  const [cargandoCompras, setCargandoCompras] = useState(true);
+  const [errorCompras, setErrorCompras] = useState("");
 
   useEffect(() => {
     if (usuarioActivo?.roleId !== 1) {
@@ -38,6 +46,27 @@ function Perfil() {
     };
 
     cargarUsuarios();
+  }, [usuarioActivo?.roleId]);
+
+  useEffect(() => {
+    if (usuarioActivo?.roleId !== 3) {
+      setCargandoCompras(false);
+      return;
+    }
+
+    const cargarCompras = async () => {
+      try {
+        const datos = await obtenerHistorialCompras();
+        setCompras(datos);
+      } catch (error) {
+        console.error(error);
+        setErrorCompras(error.message);
+      } finally {
+        setCargandoCompras(false);
+      }
+    };
+
+    cargarCompras();
   }, [usuarioActivo?.roleId]);
 
   const cerrarSesion = () => {
@@ -77,12 +106,6 @@ function Perfil() {
     );
   }
 
-  const historialCompras = JSON.parse(
-    localStorage.getItem("historialCompras") || "{}",
-  );
-
-  const compras = historialCompras[usuarioActivo.email] || [];
-
   return (
     <div className="container mt-4 mb-5">
       <div className="d-flex justify-content-around align-items-center mb-5">
@@ -111,7 +134,11 @@ function Perfil() {
 
       <h2>Historial de compras</h2>
 
-      {compras.length === 0 ? (
+      {cargandoCompras ? (
+        <p>Cargando historial de compras...</p>
+      ) : errorCompras ? (
+        <p>{errorCompras}</p>
+      ) : compras.length === 0 ? (
         <p>Todavía no realizaste ninguna compra.</p>
       ) : (
         compras.map((compra) => (
@@ -120,14 +147,16 @@ function Perfil() {
               Compra del {new Date(compra.date).toLocaleDateString("es-AR")}
             </h5>
 
-            {compra.details.map((detalle, index) => (
-              <p key={`${compra.id}-${detalle.gameId}-${index}`}>
-                {detalle.game.name} — Cantidad: {detalle.quantity} — $
-                {(detalle.unitPrice * detalle.quantity).toFixed(2)}
+            <p>Estado: {compra.status}</p>
+
+            {compra.detalleCompras.map((detalle) => (
+              <p key={detalle.id}>
+                {detalle.videojuego.name} — Cantidad: {detalle.quantity} — $
+                {(Number(detalle.unitPrice) * detalle.quantity).toFixed(2)}
               </p>
             ))}
 
-            <h5>Total: ${compra.total.toFixed(2)}</h5>
+            <h5>Total: ${Number(compra.total).toFixed(2)}</h5>
           </div>
         ))
       )}
