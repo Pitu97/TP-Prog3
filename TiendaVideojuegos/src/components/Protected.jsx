@@ -7,7 +7,7 @@ function Protected({ rolesPermitidos }) {
     return <Navigate to="/login" replace />;
   }
 
-  const rolUsuario = usuarioActivo.role || "user";
+  const rolUsuario = usuarioActivo.roleId || 3;
   if (rolesPermitidos && !rolesPermitidos.includes(rolUsuario)) {
     alert("No tenés permisos de administrador para acceder a esta sección.");
     return <Navigate to="/" replace />;

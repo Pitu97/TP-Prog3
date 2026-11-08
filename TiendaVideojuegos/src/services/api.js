@@ -20,6 +20,17 @@ export const obtenerCategorias = async () => {
   return await response.json();
 };
 
+export const obtenerUsuarios = async () => {
+  const response = await fetch(`${API_URL}/admin/users`);
+
+  if (!response.ok) {
+    throw new Error("Error al obtener los usuarios");
+  }
+
+  return await response.json();
+};
+
+
 export const registrarUsuario = async (usuario) => {
   const response = await fetch(`${API_URL}/users/register`, {
     method: "POST",

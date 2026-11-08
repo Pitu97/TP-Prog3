@@ -16,8 +16,8 @@ function BarraNav({ setBusqueda }) {
   const { modo, cambiarTema, colores } = useTheme();
 
   const usuarioActivo = JSON.parse(localStorage.getItem("usuarioActivo"));
-  const rol = usuarioActivo?.role;
-  const esAdmin = rol === "admin" || rol === "superadmin";
+  const rol = usuarioActivo?.roleId;
+  const esAdmin = rol === 2 || rol === 1;
 
   const handleSubmit = (event) => {
     event.preventDefault();

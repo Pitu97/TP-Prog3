@@ -4,7 +4,7 @@ import { useTheme } from "../context/ThemeContext";
 import Table from "react-bootstrap/Table";
 import Form from "react-bootstrap/Form";
 
-function Perfil() {
+function Perfil({usuarios, cargandoUsuarios}) {
   const navigate = useNavigate();
   const { colores } = useTheme();
 
@@ -17,9 +17,9 @@ function Perfil() {
     navigate("/login");
   };
 
-  const [listaUsuarios, setListaUsuarios] = useState(
+  /*const [listaUsuarios, setListaUsuarios] = useState(
     JSON.parse(localStorage.getItem("usuarios") || "[]"),
-  );
+  );*/
 
   const cambiarRolUsuario = (emailUsuario, nuevoRol) => {
     const usuariosActualizados = listaUsuarios.map((u) =>
@@ -103,7 +103,7 @@ function Perfil() {
       )}
 
       {/* panel del superadm */}
-      {usuarioActivo.role === "superadmin" && (
+      {usuarioActivo.roleId === 1 && (
         <div
           className="mt-5 p-4 rounded"
           style={{
@@ -125,17 +125,17 @@ function Perfil() {
               </tr>
             </thead>
             <tbody>
-              {listaUsuarios.map((u) => (
+              {cargandoUsuarios? "Cargando usuarios..." : usuarios.map((u) => (
                 <tr key={u.email}>
                   <td>{u.name}</td>
                   <td>{u.email}</td>
                   <td style={{ color: colores.secondary, fontWeight: "bold" }}>
-                    {u.role || "user"}
+                    {u.roleId || 3}
                   </td>
                   <td>
                     <Form.Select
                       size="sm"
-                      value={u.role || "user"}
+                      value={u.roleId || 3}
                       onChange={(e) =>
                         cambiarRolUsuario(u.email, e.target.value)
                       }
@@ -146,9 +146,9 @@ function Perfil() {
                         border: `1px solid ${colores.secondary}`,
                       }}
                     >
-                      <option value="user">user</option>
-                      <option value="admin">admin</option>
-                      <option value="superadmin">superadmin</option>
+                      <option value="3">user</option>
+                      <option value="2">admin</option>
+                      <option value="1">superadmin</option>
                     </Form.Select>
                   </td>
                 </tr>

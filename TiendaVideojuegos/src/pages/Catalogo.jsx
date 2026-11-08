@@ -18,10 +18,6 @@ function Catalogo({ juegos, categorias, agregarAlCarrito, busqueda, setBusqueda 
     (cat) => cat.name === generoRecibido,
   );
 
-  const [categorias, setCategorias] = useState(
-    categoriaEncontrada ? [categoriaEncontrada.id] : [],
-  );
-
   const togglePlataforma = (plat) => {
     if (plataformas.includes(plat)) {
       setPlataformas(plataformas.filter((item) => item !== plat));
