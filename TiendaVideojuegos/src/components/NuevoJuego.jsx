@@ -1,21 +1,20 @@
-
 import { useState } from "react";
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
 
-function NuevoJuego({ agregarJuego }) {
+function NuevoJuego({ agregarJuego, categorias, cargandoCategorias }) {
   const [juego, setJuego] = useState({
     name: "",
     description: "",
     price: "",
     platform: "",
     categoryId: "",
-    image: ""
+    image: "",
   });
 
   const handleChange = (e) => {
     setJuego({
       ...juego,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
@@ -25,7 +24,7 @@ function NuevoJuego({ agregarJuego }) {
     const nuevoJuego = {
       ...juego,
       price: Number(juego.price),
-      categoryId: Number(juego.categoryId)
+      categoryId: Number(juego.categoryId),
     };
 
     console.log("Juego enviado:", nuevoJuego);
@@ -40,7 +39,7 @@ function NuevoJuego({ agregarJuego }) {
       price: "",
       platform: "",
       categoryId: "",
-      image: ""
+      image: "",
     });
   };
 
@@ -48,9 +47,7 @@ function NuevoJuego({ agregarJuego }) {
     <Container className="mt-4 mb-5">
       <Row className="justify-content-center">
         <Col md={8} lg={6}>
-          <h2 className="mb-4 text-center">
-            Agregar nuevo juego
-          </h2>
+          <h2 className="mb-4 text-center">Agregar nuevo juego</h2>
 
           <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-3">
@@ -113,10 +110,17 @@ function NuevoJuego({ agregarJuego }) {
                 onChange={handleChange}
                 required
               >
-                <option value="">Seleccionar género</option>
-                <option value="1">Acción</option>
-                <option value="2">RPG</option>
-                <option value="3">Cyberpunk</option>
+                <option value="">
+                  {cargandoCategorias
+                    ? "Cargando categorías..."
+                    : "Seleccionar género"}
+                </option>
+
+                {categorias.map((cat) => (
+                  <option key={cat.id} value={cat.id}>
+                    {cat.name}
+                  </option>
+                ))}
               </Form.Select>
             </Form.Group>
 
