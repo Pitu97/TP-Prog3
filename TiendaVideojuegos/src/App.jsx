@@ -15,6 +15,9 @@ import BarraNav from "./components/BarraNav";
 import Footer from "./components/Footer";
 import NuevoJuego from "./components/NuevoJuego";
 import NuevaCategoria from "./components/NuevaCategoria";
+import { ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   const [juegos, setJuegos] = useState([]);
@@ -68,11 +71,21 @@ function App() {
   };
 
   const agregarAlCarrito = (juego) => {
-    setCarrito((carritoActual) => {
-      const existe = carritoActual.some(
-        (juegoCarrito) => juegoCarrito.id === juego.id,
-      );
+    const existe = carrito.some((juegoCarrito) => juegoCarrito.id === juego.id);
 
+    if (existe) {
+      toast.info("Se agrego otra copia al carrito", {
+        position: "top-right",
+        autoClose: 2500,
+      });
+    } else {
+      toast.success("Juego agregado al carrito con éxito", {
+        position: "top-right",
+        autoClose: 2500,
+      });
+    }
+
+    setCarrito((carritoActual) => {
       let carritoActualizado;
 
       if (existe) {
@@ -89,11 +102,9 @@ function App() {
       }
 
       localStorage.setItem("carrito", JSON.stringify(carritoActualizado));
-
       return carritoActualizado;
     });
   };
-
   return (
     <ThemeProvider>
       <BrowserRouter>
@@ -149,13 +160,7 @@ function App() {
                 }
               />
 
-              <Route
-                element={
-                  <Protected
-                    rolesPermitidos={[3, 2, 1]}
-                  />
-                }
-              >
+              <Route element={<Protected rolesPermitidos={[3, 2, 1]} />}>
                 <Route path="/perfil" element={<Perfil />} />
                 <Route
                   path="/carrito"
@@ -188,6 +193,18 @@ function App() {
 
               </Route>
             </Routes>
+            <ToastContainer
+              position="top-right"
+              autoClose={3000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              theme="light"
+            />
           </main>
 
           <Footer />
