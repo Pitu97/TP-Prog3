@@ -1,16 +1,42 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
 import Table from "react-bootstrap/Table";
 import Form from "react-bootstrap/Form";
+import { obtenerUsuarios } from "../services/api";
 
-function Perfil({usuarios, cargandoUsuarios}) {
+function Perfil() {
   const navigate = useNavigate();
   const { colores } = useTheme();
 
   const usuarioActivo = JSON.parse(
     localStorage.getItem("usuarioActivo") || "null",
   );
+
+  const [usuarios, setUsuarios] = useState([]);
+  const [cargandoUsuarios, setCargandoUsuarios] = useState(true);
+  const [errorUsuarios, setErrorUsuarios] = useState("");
+
+  useEffect(() => {
+    if (usuarioActivo?.roleId !== 1) {
+      setCargandoUsuarios(false);
+      return;
+    }
+
+    const cargarUsuarios = async () => {
+      try {
+        const datos = await obtenerUsuarios();
+        setUsuarios(datos);
+      } catch (error) {
+        console.error(error);
+        setErrorUsuarios(error.message);
+      } finally {
+        setCargandoUsuarios(false);
+      }
+    };
+
+    cargarUsuarios();
+  }, [usuarioActivo?.roleId]);
 
   const cerrarSesion = () => {
     localStorage.removeItem("usuarioActivo");
@@ -125,34 +151,51 @@ function Perfil({usuarios, cargandoUsuarios}) {
               </tr>
             </thead>
             <tbody>
-              {cargandoUsuarios? "Cargando usuarios..." : usuarios.map((u) => (
-                <tr key={u.email}>
-                  <td>{u.name}</td>
-                  <td>{u.email}</td>
-                  <td style={{ color: colores.secondary, fontWeight: "bold" }}>
-                    {u.roleId || 3}
-                  </td>
-                  <td>
-                    <Form.Select
-                      size="sm"
-                      value={u.roleId || 3}
-                      onChange={(e) =>
-                        cambiarRolUsuario(u.email, e.target.value)
-                      }
-                      disabled={u.email === usuarioActivo.email}
-                      style={{
-                        backgroundColor: colores.background,
-                        color: colores.textMain,
-                        border: `1px solid ${colores.secondary}`,
-                      }}
-                    >
-                      <option value="3">user</option>
-                      <option value="2">admin</option>
-                      <option value="1">superadmin</option>
-                    </Form.Select>
-                  </td>
-                </tr>
-              ))}
+              {cargandoUsuarios
+                ? (<tr>
+                  <td>"Cargando usuarios..."</td>
+                </tr>)
+                : errorUsuarios ? (
+                  <tr>
+                    <td colSpan={4}>{errorUsuarios}</td>
+                  </tr>
+                ) : usuarios.length === 0 ? (
+                  <tr>
+                    <td colSpan={4}>No hay usuarios registrados</td>
+                  </tr>
+                ) : (
+                  usuarios.map((u) => (
+                    <tr key={u.email}>
+                      <td>{u.name}</td>
+                      <td>{u.email}</td>
+                      <td
+                        style={{ color: colores.secondary, fontWeight: "bold" }}
+                      >
+                        {u.roleId || 3}
+                      </td>
+                      <td>
+                        <Form.Select
+                          size="sm"
+                          value={u.roleId || 3}
+                          onChange={(e) =>
+                            cambiarRolUsuario(u.email, e.target.value)
+                          }
+                          disabled={u.email === usuarioActivo.email}
+                          style={{
+                            backgroundColor: colores.background,
+                            color: colores.textMain,
+                            border: `1px solid ${colores.secondary}`,
+                          }}
+                        >
+                          <option value="3">user</option>
+                          <option value="2">admin</option>
+                          <option value="1">superadmin</option>
+                        </Form.Select>
+                      </td>
+                    </tr>
+                  ))
+                )
+              } 
             </tbody>
           </Table>
         </div>

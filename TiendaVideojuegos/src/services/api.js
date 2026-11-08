@@ -21,13 +21,21 @@ export const obtenerCategorias = async () => {
 };
 
 export const obtenerUsuarios = async () => {
-  const response = await fetch(`${API_URL}/admin/users`);
+  const token = localStorage.getItem("token");
+
+  const response = await fetch(`${API_URL}/admin/users`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const datos = await response.json();
 
   if (!response.ok) {
     throw new Error("Error al obtener los usuarios");
   }
 
-  return await response.json();
+  return datos;
 };
 
 

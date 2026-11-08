@@ -7,7 +7,7 @@ import Dashboard from "./pages/Dashboard";
 import Catalogo from "./pages/Catalogo";
 import Carrito from "./pages/Carrito";
 import Login from "./pages/Login";
-import { obtenerJuegos, obtenerCategorias, obtenerUsuarios } from "./services/api";
+import { obtenerJuegos, obtenerCategorias } from "./services/api";
 import DetalleJuego from "./pages/DetalleJuego";
 import { colores } from "./data/theme";
 import Perfil from "./pages/Perfil";
@@ -15,10 +15,7 @@ import BarraNav from "./components/BarraNav";
 import Footer from "./components/Footer";
 import NuevoJuego from "./components/NuevoJuego";
 
-function App() {
-  const [usuarios, setUsuarios] = useState([]);
-  const [cargandoUsuarios, setCargandoUsuarios] = useState(true);
-  
+function App() {  
   const [juegos, setJuegos] = useState([]);
   const [cargando, setCargando] = useState(true);
   
@@ -63,22 +60,6 @@ function App() {
     };
 
     cargarCategorias();
-  }, []);
-
-  useEffect(() => {
-    const cargarUsuarios = async () => {
-      try {
-        const datos = await obtenerUsuarios();
-        setUsuarios(datos);
-      } catch (error) {
-        console.error(error);
-        setError("No se pudieron cargar los Usuarios");
-      } finally {
-        setCargandoUsuarios(false);
-      }
-    };
-
-    cargarUsuarios();
   }, []);
 
   const agregarJuego = (nuevoJuego) => {
@@ -177,7 +158,7 @@ function App() {
                   />
                 }
               >
-                <Route path="/perfil" element={<Perfil usuarios={usuarios} cargandoUsuarios={cargandoUsuarios}/>} />
+                <Route path="/perfil" element={<Perfil />} />
               </Route>
               <Route
                 element={
