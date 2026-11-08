@@ -14,6 +14,7 @@ import Perfil from "./pages/Perfil";
 import BarraNav from "./components/BarraNav";
 import Footer from "./components/Footer";
 import NuevoJuego from "./components/NuevoJuego";
+import NuevaCategoria from "./components/NuevaCategoria";
 
 function App() {
   const [juegos, setJuegos] = useState([]);
@@ -78,9 +79,9 @@ function App() {
         carritoActualizado = carritoActual.map((juegoCarrito) =>
           juegoCarrito.id === juego.id
             ? {
-                ...juegoCarrito,
-                cantidad: (juegoCarrito.cantidad || 1) + 1,
-              }
+              ...juegoCarrito,
+              cantidad: (juegoCarrito.cantidad || 1) + 1,
+            }
             : juegoCarrito,
         );
       } else {
@@ -157,9 +158,9 @@ function App() {
               >
                 <Route path="/perfil" element={<Perfil />} />
                 <Route
-                path="/carrito"
-                element={<Carrito carrito={carrito} setCarrito={setCarrito} />}
-              />
+                  path="/carrito"
+                  element={<Carrito carrito={carrito} setCarrito={setCarrito} />}
+                />
 
               </Route>
               <Route element={<Protected rolesPermitidos={[1, 2]} />}>
@@ -173,6 +174,18 @@ function App() {
                     />
                   }
                 />
+
+                <Route
+                  path="/NuevaCategoria"
+                  element={
+                    <NuevaCategoria
+                      categorias={categorias}
+                      setCategorias={setCategorias}
+                      cargandoCategorias={cargandoCategorias}
+                    />
+                  }
+                />
+
               </Route>
             </Routes>
           </main>

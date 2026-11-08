@@ -90,6 +90,12 @@ function BarraNav({ setBusqueda }) {
               </Nav.Link>
             )}
 
+            {esAdmin && (
+              <Nav.Link onClick={() => navigate("/NuevaCategoria")}>
+                Agregar categoría
+              </Nav.Link>
+            )}
+
             {usuarioActivo ? (
               <Nav.Link
                 onClick={() => navigate("/perfil")}

@@ -52,7 +52,7 @@ export const actualizarRolUsuario = async (id, roleId) => {
 
   const datos = await response.json();
 
-  if(!response.ok) {
+  if (!response.ok) {
     throw new Error("Error al actualizar el rol");
   }
 
@@ -102,7 +102,7 @@ export const crearCompra = async (items) => {
   const response = await fetch(`${API_URL}/purchases`, {
     method: "POST",
     headers: {
-      "Content-Type":"application/json",
+      "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({ items }),
@@ -117,6 +117,7 @@ export const crearCompra = async (items) => {
   return datos.purchase;
 };
 
+
 export const obtenerHistorialCompras = async () => {
   const token = localStorage.getItem("token");
 
@@ -128,8 +129,72 @@ export const obtenerHistorialCompras = async () => {
 
   const datos = await response.json();
 
-  if(!response.ok) {
+  if (!response.ok) {
     throw new Error("Error al obtener el historial");
+  }
+
+  return datos;
+};
+
+// CREAR CATEGORÍA
+export const crearCategoria = async (name) => {
+  const token = localStorage.getItem("token");
+
+  const response = await fetch(`${API_URL}/categories`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ name }),
+  });
+
+  const datos = await response.json();
+
+  if (!response.ok) {
+    throw new Error(datos.message || "Error al crear la categoría");
+  }
+
+  return datos;
+};
+
+// ACTUALIZAR CATEGORÍA
+export const actualizarCategoria = async (id, name) => {
+  const token = localStorage.getItem("token");
+
+  const response = await fetch(`${API_URL}/categories/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ name }),
+  });
+
+  const datos = await response.json();
+
+  if (!response.ok) {
+    throw new Error(datos.message || "Error al actualizar la categoría");
+  }
+
+  return datos;
+};
+
+// ELIMINAR CATEGORÍA
+export const eliminarCategoria = async (id) => {
+  const token = localStorage.getItem("token");
+
+  const response = await fetch(`${API_URL}/categories/${id}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const datos = await response.json();
+
+  if (!response.ok) {
+    throw new Error(datos.message || "Error al eliminar la categoría");
   }
 
   return datos;
