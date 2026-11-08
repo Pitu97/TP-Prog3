@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -28,7 +27,6 @@ function NuevaCategoria({ categorias, setCategorias, cargandoCategorias }) {
 
   const navigate = useNavigate();
 
-  // CREAR O ACTUALIZAR CATEGORÍA
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -42,7 +40,7 @@ function NuevaCategoria({ categorias, setCategorias, cargandoCategorias }) {
     const yaExiste = categorias.some(
       (cat) =>
         cat.name.toLowerCase() === nombreLimpio.toLowerCase() &&
-        cat.id !== idEditando
+        cat.id !== idEditando,
     );
 
     if (yaExiste) {
@@ -56,22 +54,20 @@ function NuevaCategoria({ categorias, setCategorias, cargandoCategorias }) {
       setMensaje("");
 
       if (idEditando !== null) {
-        // ACTUALIZAR
         const categoriaActualizada = await actualizarCategoria(
           idEditando,
-          nombreLimpio
+          nombreLimpio,
         );
 
         setCategorias((prev) =>
           prev.map((cat) =>
-            cat.id === idEditando ? categoriaActualizada : cat
-          )
+            cat.id === idEditando ? categoriaActualizada : cat,
+          ),
         );
 
         setMensaje("Categoría actualizada correctamente.");
         setIdEditando(null);
       } else {
-        // CREAR
         const nuevaCategoria = await crearCategoria(nombreLimpio);
 
         setCategorias((prev) => [...prev, nuevaCategoria]);
@@ -87,7 +83,6 @@ function NuevaCategoria({ categorias, setCategorias, cargandoCategorias }) {
     }
   };
 
-  // CARGAR CATEGORÍA EN EL FORMULARIO PARA EDITAR
   const handleEditar = (categoria) => {
     setIdEditando(categoria.id);
     setNombre(categoria.name);
@@ -95,7 +90,6 @@ function NuevaCategoria({ categorias, setCategorias, cargandoCategorias }) {
     setMensaje("");
   };
 
-  // CANCELAR EDICIÓN
   const cancelarEdicion = () => {
     setIdEditando(null);
     setNombre("");
@@ -103,10 +97,9 @@ function NuevaCategoria({ categorias, setCategorias, cargandoCategorias }) {
     setMensaje("");
   };
 
-  // ELIMINAR CATEGORÍA
   const handleEliminar = async (categoria) => {
     const confirmar = window.confirm(
-      `¿Estás seguro de que querés eliminar la categoría "${categoria.name}"?`
+      `¿Estás seguro de que querés eliminar la categoría "${categoria.name}"?`,
     );
 
     if (!confirmar) return;
@@ -117,9 +110,7 @@ function NuevaCategoria({ categorias, setCategorias, cargandoCategorias }) {
 
       await eliminarCategoria(categoria.id);
 
-      setCategorias((prev) =>
-        prev.filter((cat) => cat.id !== categoria.id)
-      );
+      setCategorias((prev) => prev.filter((cat) => cat.id !== categoria.id));
 
       if (idEditando === categoria.id) {
         cancelarEdicion();
@@ -135,9 +126,7 @@ function NuevaCategoria({ categorias, setCategorias, cargandoCategorias }) {
     <Container className="mt-4 mb-5">
       <Row className="justify-content-center">
         <Col md={9} lg={7}>
-          <h2 className="text-center mb-4">
-            Administrar categorías
-          </h2>
+          <h2 className="text-center mb-4">Administrar categorías</h2>
 
           {error && (
             <Alert variant="danger" dismissible onClose={() => setError("")}>
@@ -146,19 +135,13 @@ function NuevaCategoria({ categorias, setCategorias, cargandoCategorias }) {
           )}
 
           {mensaje && (
-            <Alert
-              variant="success"
-              dismissible
-              onClose={() => setMensaje("")}
-            >
+            <Alert variant="success" dismissible onClose={() => setMensaje("")}>
               {mensaje}
             </Alert>
           )}
 
           <h5 className="mb-3">
-            {idEditando !== null
-              ? "Editar categoría"
-              : "Crear nueva categoría"}
+            {idEditando !== null ? "Editar categoría" : "Crear nueva categoría"}
           </h5>
 
           <Form onSubmit={handleSubmit}>
@@ -175,10 +158,7 @@ function NuevaCategoria({ categorias, setCategorias, cargandoCategorias }) {
             </Form.Group>
 
             <div className="d-flex gap-2">
-              <Button
-                type="submit"
-                disabled={guardando}
-              >
+              <Button type="submit" disabled={guardando}>
                 {guardando
                   ? "Guardando..."
                   : idEditando !== null
@@ -239,10 +219,7 @@ function NuevaCategoria({ categorias, setCategorias, cargandoCategorias }) {
           )}
 
           <div className="d-grid mt-4">
-            <Button
-              variant="secondary"
-              onClick={() => navigate(-1)}
-            >
+            <Button variant="secondary" onClick={() => navigate(-1)}>
               Volver
             </Button>
           </div>
