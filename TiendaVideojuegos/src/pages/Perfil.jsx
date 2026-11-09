@@ -7,6 +7,8 @@ import {
   obtenerUsuarios,
   actualizarRolUsuario,
   obtenerHistorialCompras,
+  obtenerTodasCompras,
+  actualizarEstadoCompra,
 } from "../services/api";
 
 function Perfil() {
@@ -26,6 +28,11 @@ function Perfil() {
   const [compras, setCompras] = useState([]);
   const [cargandoCompras, setCargandoCompras] = useState(true);
   const [errorCompras, setErrorCompras] = useState("");
+
+  const [todasLasCompras, setTodasLasCompras] = useState([]);
+  const [cargandoTodasLasCompras, setCargandoTodasLasCompras] = useState(true);
+  const [errorTodasLasCompras, setErrorTodasLasCompras] = useState("");
+  const [actualizandoCompra, setActualizandoCompra] = useState(null);
 
   useEffect(() => {
     if (usuarioActivo?.roleId !== 1) {
@@ -67,6 +74,27 @@ function Perfil() {
     };
 
     cargarCompras();
+  }, [usuarioActivo?.roleId]);
+
+  useEffect(() => {
+    if (![1, 2].includes(usuarioActivo?.roleId)) {
+      setCargandoTodasLasCompras(false);
+      return;
+    }
+
+    const cargarTodasLasCompras = async () => {
+      try {
+        const datos = await obtenerTodasCompras();
+        setTodasLasCompras(datos);
+      } catch (error) {
+        console.error(error);
+        setErrorTodasLasCompras(error.message);
+      } finally {
+        setCargandoTodasLasCompras(false);
+      }
+    };
+
+    cargarTodasLasCompras();
   }, [usuarioActivo?.roleId]);
 
   const cerrarSesion = () => {
