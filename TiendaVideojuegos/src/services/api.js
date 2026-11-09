@@ -144,6 +144,50 @@ export const actualizarRolUsuario = async (id, roleId) => {
   return datos.user;
 }
 
+// ELIMINAR USUARIO
+
+export const eliminarUsuario = async (id) => {
+  const token = localStorage.getItem("token");
+
+  const response = await fetch(`${API_URL}/admin/users/${id}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const datos = await response.json();
+
+  if (!response.ok) {
+    throw new Error(datos.message || "Error al eliminar el usuario");
+  }
+
+  return datos;
+};
+
+// CREAR ADMINISTRADOR
+
+export const crearAdmin = async (usuario) => {
+  const token = localStorage.getItem("token");
+
+  const response = await fetch(`${API_URL}/users/admin`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(usuario),
+  });
+
+  const datos = await response.json();
+
+  if (!response.ok) {
+    throw new Error(datos.message || "Error al crear el administrador");
+  }
+
+  return datos;
+};
+
 // REGISTRAR USUARIO
 
 export const registrarUsuario = async (usuario) => {
