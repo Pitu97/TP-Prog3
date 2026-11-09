@@ -12,6 +12,7 @@ import {
   obtenerCategorias,
   crearJuego,
   actualizarJuego,
+  eliminarJuego as eliminarJuegoAPI,
 } from "./services/api";
 import EditarJuego from "./components/EditarJuego";
 import DetalleJuego from "./pages/DetalleJuego";
@@ -92,6 +93,14 @@ function App() {
     return juegoActualizado;
   };
 
+  const eliminarJuego = async (id) => {
+    await eliminarJuegoAPI(id);
+
+    setJuegos((juegosActuales) => juegosActuales.filter(
+      (juego) => Number(juego.id) !== Number(id)
+    ));
+  };
+
   const agregarAlCarrito = (juego) => {
     const existe = carrito.some((juegoCarrito) => juegoCarrito.id === juego.id);
 
@@ -153,6 +162,7 @@ function App() {
                     agregarAlCarrito={agregarAlCarrito}
                     categorias={categorias}
                     cargandoCategorias={cargandoCategorias}
+                    eliminarJuego={eliminarJuego}
                   />
                 }
               />
@@ -178,6 +188,7 @@ function App() {
                     agregarAlCarrito={agregarAlCarrito}
                     busqueda={busqueda}
                     setBusqueda={setBusqueda}
+                    eliminarJuego={eliminarJuego}
                   />
                 }
               />

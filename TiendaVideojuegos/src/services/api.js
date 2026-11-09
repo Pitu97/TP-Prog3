@@ -52,6 +52,35 @@ export const actualizarJuego = async (id, juego) => {
   return datos;
 };
 
+export const eliminarJuego = async (id) => {
+  const token = localStorage.getItem("token");
+
+  const response = await fetch(`${API_URL}/games/${id}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const texto = await response.text();
+
+  let datos;
+
+  try {
+    datos = JSON.parse(texto);
+  } catch {
+    datos = texto;
+  }
+
+  if (!response.ok) {
+    throw new Error(
+      datos?.message || datos || "Error al eliminar el videojuego"
+    );
+  }
+
+  return datos;
+};
+
 export const obtenerCategorias = async () => {
   const response = await fetch(`${API_URL}/categories`);
 

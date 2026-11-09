@@ -10,6 +10,7 @@ function Catalogo({
   agregarAlCarrito,
   busqueda,
   setBusqueda,
+  eliminarJuego,
 }) {
   const [plataformas, setPlataformas] = useState([]);
   const { colores } = useTheme();
@@ -144,6 +145,7 @@ function Catalogo({
               price={juego.price}
               image={juego.image}
               agregarAlCarrito={agregarAlCarrito}
+              eliminarJuego={eliminarJuego}
             />
           ))}
         </div>
