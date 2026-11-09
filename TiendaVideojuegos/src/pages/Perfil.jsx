@@ -9,6 +9,8 @@ import {
   obtenerHistorialCompras,
   obtenerTodasCompras,
   actualizarEstadoCompra,
+  eliminarUsuario,
+  crearAdmin,
 } from "../services/api";
 
 function Perfil() {
@@ -19,11 +21,20 @@ function Perfil() {
     localStorage.getItem("usuarioActivo") || "null",
   );
 
+  const [nuevoAdmin, setNuevoAdmin] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
+
+  const [creandoAdmin, setCreandoAdmin] = useState(false);
+
   const [actualizandoRol, setActualizandoRol] = useState(null);
 
   const [usuarios, setUsuarios] = useState([]);
   const [cargandoUsuarios, setCargandoUsuarios] = useState(true);
   const [errorUsuarios, setErrorUsuarios] = useState("");
+  const [eliminandoUsuario, setEliminandoUsuario] = useState(null);
 
   const [compras, setCompras] = useState([]);
   const [cargandoCompras, setCargandoCompras] = useState(true);
@@ -104,6 +115,31 @@ function Perfil() {
     navigate("/login");
   };
 
+  const handlerCrearAdmin = async (e) => {
+    e.preventDefault();
+
+    try {
+      setCreandoAdmin(true);
+
+      const datos = await crearAdmin(nuevoAdmin);
+
+      setUsuarios((usuariosActuales) => [...usuariosActuales, datos.user]);
+
+      setNuevoAdmin({
+        name: "",
+        email: "",
+        password: "",
+      });
+
+      alert("Administrador creado correctamente");
+    } catch (error) {
+      console.error(error);
+      alert(error.message || "Error al crear el administrador");
+    } finally {
+      setCreandoAdmin(false);
+    }
+  };
+
   const cambiarRolUsuario = async (idUsuario, nuevoRol) => {
     try {
       setActualizandoRol(idUsuario);
@@ -123,6 +159,31 @@ function Perfil() {
       alert(error.message);
     } finally {
       setActualizandoRol(null);
+    }
+  };
+
+  const borrarUsuario = async (id) => {
+    const confirmar = window.confirm(
+      "¿Estás seguro de que deseas eliminar este usuario?",
+    );
+
+    if (!confirmar) return;
+
+    try {
+      setEliminandoUsuario(id);
+
+      await eliminarUsuario(id);
+
+      setUsuarios((usuariosActuales) =>
+        usuariosActuales.filter((usuario) => usuario.id !== id),
+      );
+
+      alert("Usuario eliminado correctamente");
+    } catch (error) {
+      console.error(error);
+      alert(error.message || "Error al eliminar el usuario");
+    } finally {
+      setEliminandoUsuario(null);
     }
   };
 
@@ -221,80 +282,158 @@ function Perfil() {
 
       {/* panel del superadm */}
       {usuarioActivo.roleId === 1 && (
-        <div
-          className="mt-5 p-4 rounded"
-          style={{
-            backgroundColor: colores.card,
-            border: `1px solid ${colores.primary}`,
-          }}
-        >
-          <h3 style={{ color: colores.primary, marginBottom: "20px" }}>
-            Gestion de Usuarios
-          </h3>
+        <div>
+          <div className="mb-4">
+            <h3>Crear Administrador</h3>
 
-          <Table striped bordered hover variant="dark" responsive>
-            <thead>
-              <tr>
-                <th>Nombre</th>
-                <th>Email</th>
-                <th>Rol Actual</th>
-                <th>Cambiar Rol</th>
-              </tr>
-            </thead>
-            <tbody>
-              {cargandoUsuarios ? (
+            <Form onSubmit={handlerCrearAdmin}>
+              <Form.Group className="mb-3">
+                <Form.Label>Nombre</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Nombre del administrador"
+                  value={nuevoAdmin.name}
+                  onChange={(e) =>
+                    setNuevoAdmin({
+                      ...nuevoAdmin,
+                      name: e.target.value,
+                    })
+                  }
+                  required
+                />
+              </Form.Group>
+
+              <Form.Group className="mb-3">
+                <Form.Label>Email</Form.Label>
+                <Form.Control
+                  type="email"
+                  placeholder="Email del administrador"
+                  value={nuevoAdmin.email}
+                  onChange={(e) =>
+                    setNuevoAdmin({
+                      ...nuevoAdmin,
+                      email: e.target.value,
+                    })
+                  }
+                  required
+                />
+              </Form.Group>
+
+              <Form.Group className="mb-3">
+                <Form.Label>Contraseña</Form.Label>
+                <Form.Control
+                  type="password"
+                  placeholder="Contraseña"
+                  value={nuevoAdmin.password}
+                  onChange={(e) =>
+                    setNuevoAdmin({
+                      ...nuevoAdmin,
+                      password: e.target.value,
+                    })
+                  }
+                  required
+                />
+              </Form.Group>
+
+              <button
+                type="submit"
+                className="btn btn-primary"
+                disabled={creandoAdmin}
+              >
+                {creandoAdmin ? "Creando..." : "Crear administrador"}
+              </button>
+            </Form>
+          </div>
+          <div
+            className="mt-5 p-4 rounded"
+            style={{
+              backgroundColor: colores.card,
+              border: `1px solid ${colores.primary}`,
+            }}
+          >
+            <h3 style={{ color: colores.primary, marginBottom: "20px" }}>
+              Gestion de Usuarios
+            </h3>
+
+            <Table striped bordered hover variant="dark" responsive>
+              <thead>
                 <tr>
-                  <td>"Cargando usuarios..."</td>
+                  <th>Nombre</th>
+                  <th>Email</th>
+                  <th>Rol Actual</th>
+                  <th>Cambiar Rol</th>
+                  <th>Acciones</th>
                 </tr>
-              ) : errorUsuarios ? (
-                <tr>
-                  <td colSpan={4}>{errorUsuarios}</td>
-                </tr>
-              ) : usuarios.length === 0 ? (
-                <tr>
-                  <td colSpan={4}>No hay usuarios registrados</td>
-                </tr>
-              ) : (
-                usuarios.map((u) => (
-                  <tr key={u.email}>
-                    <td>{u.name}</td>
-                    <td>{u.email}</td>
-                    <td
-                      style={{ color: colores.secondary, fontWeight: "bold" }}
-                    >
-                      {u.roleId === 1
-                        ? "superadmin"
-                        : u.roleId === 2
-                          ? "admin"
-                          : "client"}
-                    </td>
-                    <td>
-                      <Form.Select
-                        size="sm"
-                        value={u.roleId}
-                        onChange={(e) =>
-                          cambiarRolUsuario(u.id, e.target.value)
-                        }
-                        disabled={
-                          u.email === usuarioActivo.email ||
-                          actualizandoRol === u.id
-                        }
-                        style={{
-                          backgroundColor: colores.background,
-                          color: colores.textMain,
-                          border: `1px solid ${colores.secondary}`,
-                        }}
-                      >
-                        <option value={3}>client</option>
-                        <option value={2}>admin</option>
-                        <option value={1}>superadmin</option>
-                      </Form.Select>
-                    </td>
+              </thead>
+              <tbody>
+                {cargandoUsuarios ? (
+                  <tr>
+                    <td>"Cargando usuarios..."</td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </Table>
+                ) : errorUsuarios ? (
+                  <tr>
+                    <td colSpan={4}>{errorUsuarios}</td>
+                  </tr>
+                ) : usuarios.length === 0 ? (
+                  <tr>
+                    <td colSpan={4}>No hay usuarios registrados</td>
+                  </tr>
+                ) : (
+                  usuarios.map((u) => (
+                    <tr key={u.email}>
+                      <td>{u.name}</td>
+                      <td>{u.email}</td>
+                      <td
+                        style={{ color: colores.secondary, fontWeight: "bold" }}
+                      >
+                        {u.roleId === 1
+                          ? "superadmin"
+                          : u.roleId === 2
+                            ? "admin"
+                            : "client"}
+                      </td>
+                      <td>
+                        <Form.Select
+                          size="sm"
+                          value={u.roleId}
+                          onChange={(e) =>
+                            cambiarRolUsuario(u.id, e.target.value)
+                          }
+                          disabled={
+                            u.email === usuarioActivo.email ||
+                            actualizandoRol === u.id
+                          }
+                          style={{
+                            backgroundColor: colores.background,
+                            color: colores.textMain,
+                            border: `1px solid ${colores.secondary}`,
+                          }}
+                        >
+                          <option value={3}>client</option>
+                          <option value={2}>admin</option>
+                          <option value={1}>superadmin</option>
+                        </Form.Select>
+                      </td>
+                      <td>
+                        <button
+                          className="btn btn-danger btn-sm"
+                          onClick={() => borrarUsuario(u.id)}
+                          disabled={
+                            u.email === usuarioActivo.email ||
+                            eliminandoUsuario === u.id
+                          }
+                        >
+                          {eliminandoUsuario === u.id
+                            ? "Eliminando..."
+                            : "Eliminar"}
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </Table>
+          </div>
         </div>
       )}
 
