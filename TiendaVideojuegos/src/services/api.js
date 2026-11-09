@@ -10,6 +10,77 @@ export const obtenerJuegos = async () => {
   return await response.json();
 };
 
+export const crearJuego = async (juego) => {
+  const token = localStorage.getItem("token");
+
+  const response = await fetch(`${API_URL}/games`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(juego),
+  });
+
+  const datos = await response.json();
+
+  if (!response.ok) {
+    throw new Error("Error al crear videojuego");
+  }
+
+  return datos;
+};
+
+export const actualizarJuego = async (id, juego) => {
+  const token = localStorage.getItem("token");
+
+  const response = await fetch(`${API_URL}/games/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(juego),
+  });
+
+  const datos = await response.json();
+
+  if (!response.ok) {
+    throw new Error("Error al actualizar el videojuego");
+  }
+
+  return datos;
+};
+
+export const eliminarJuego = async (id) => {
+  const token = localStorage.getItem("token");
+
+  const response = await fetch(`${API_URL}/games/${id}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const texto = await response.text();
+
+  let datos;
+
+  try {
+    datos = JSON.parse(texto);
+  } catch {
+    datos = texto;
+  }
+
+  if (!response.ok) {
+    throw new Error(
+      datos?.message || datos || "Error al eliminar el videojuego"
+    );
+  }
+
+  return datos;
+};
+
 export const obtenerCategorias = async () => {
   const response = await fetch(`${API_URL}/categories`);
 

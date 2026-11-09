@@ -8,6 +8,7 @@ function Dashboard({
   agregarAlCarrito,
   categorias,
   cargandoCategorias,
+  eliminarJuego,
 }) {
   const juegosDestacados = juegos.slice(3, 8);
 
@@ -63,6 +64,7 @@ function Dashboard({
               price={juego.price}
               image={juego.image}
               agregarAlCarrito={agregarAlCarrito}
+              eliminarJuego={eliminarJuego}
             />
           ))}
         </div>
