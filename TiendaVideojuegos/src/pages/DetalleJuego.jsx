@@ -1,14 +1,16 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { Button, Card } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import Tarjeta from "../components/Tarjeta";
-import { useTheme } from "../context/ThemeContext";
 
-function DetalleJuego({ juegos, agregarAlCarrito }) {
+function DetalleJuego({ juegos, categorias, agregarAlCarrito }) {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { colores } = useTheme();
 
   const juego = juegos.find((juego) => juego.id.toString() === id);
+
+  const categoria = categorias.find(
+    (categoria) => Number(categoria.id) === Number(juego?.categoryId)
+  );
 
   if (!juego) {
     return (
@@ -59,7 +61,7 @@ function DetalleJuego({ juegos, agregarAlCarrito }) {
         <div>
           <h3>Precio: ${Number(juego.price).toFixed(2)}</h3>
           <p>Plataforma: {juego.platform || "No especificada"}</p>
-          <p>Categoria: {juego.categoryId}</p>
+          <p>Categoria: {categoria?.name || "Sin categoria"}</p>
 
           <Button
             variant="success"

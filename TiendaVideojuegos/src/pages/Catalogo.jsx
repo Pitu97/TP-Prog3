@@ -43,11 +43,19 @@ function Catalogo({
   };
 
   const toggleCategoria = (id) => {
+    const categoriaId = Number(id);
+
     setCategoriasSeleccionadas((categoriasActuales) =>
-      categoriasActuales.includes(id)
-        ? categoriasActuales.filter((catId) => catId !== id)
-        : [...categoriasActuales, id],
+      categoriasActuales.includes(categoriaId)
+        ? categoriasActuales.filter((catId) => catId !== categoriaId)
+        : [...categoriasActuales, categoriaId],
     );
+  };
+
+  const limpiarFiltros = () => {
+    setBusqueda("");
+    setPlataformas([]);
+    setCategoriasSeleccionadas([]);
   };
 
   const juegosFiltrados = juegos
@@ -118,11 +126,20 @@ function Catalogo({
                   key={cat.id}
                   type="checkbox"
                   label={cat.name}
-                  checked={categoriasSeleccionadas.includes(cat.id)}
+                  checked={categoriasSeleccionadas.includes(Number(cat.id))}
                   onChange={() => toggleCategoria(cat.id)}
                 />
               ))}
             </div>
+          </div>
+          <div style={{ marginTop: "20px" }}>
+            <button
+              type="button"
+              className="btn btn-outline-secondary"
+              onClick={limpiarFiltros}
+            >
+              Limpiar filtros
+            </button>
           </div>
         </Form>
       </div>
@@ -137,17 +154,23 @@ function Catalogo({
             gap: "15px",
           }}
         >
-          {juegosFiltrados.map((juego) => (
-            <Tarjeta
-              key={juego.id}
-              juego={juego}
-              title={juego.name}
-              price={juego.price}
-              image={juego.image}
-              agregarAlCarrito={agregarAlCarrito}
-              eliminarJuego={eliminarJuego}
-            />
-          ))}
+          {juegosFiltrados.length > 0 ? (
+            juegosFiltrados.map((juego) => (
+              <Tarjeta
+                key={juego.id}
+                juego={juego}
+                title={juego.name}
+                price={juego.price}
+                image={juego.image}
+                agregarAlCarrito={agregarAlCarrito}
+                eliminarJuego={eliminarJuego}
+              />
+            ))
+          ) : (
+            <p style={{ color: colores.textMain, margin: "30px" }}>
+              No se encontraron videojuegos con los filtros seleccionados.
+            </p>
+          )}
         </div>
       </section>
     </>

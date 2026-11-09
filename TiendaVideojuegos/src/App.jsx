@@ -174,6 +174,7 @@ function App() {
                 element={
                   <DetalleJuego
                     juegos={juegos}
+                    categorias={categorias}
                     agregarAlCarrito={agregarAlCarrito}
                   />
                 }
