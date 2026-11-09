@@ -1,9 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import Card from "react-bootstrap/Card";
-import Button from "react-bootstrap/Button";
 import { useTheme } from "../context/ThemeContext";
 import { crearCompra } from "../services/api";
 import { useState } from "react";
+import { Modal, Button } from "react-bootstrap";
+import { toast } from "react-toastify";
 
 function Carrito({ carrito, setCarrito }) {
   const navigate = useNavigate();
@@ -15,19 +16,33 @@ function Carrito({ carrito, setCarrito }) {
     const nuevoCarrito = carrito.map((juego) =>
       juego.id === id
         ? { ...juego, cantidad: (juego.cantidad || 1) + 1 }
-        : juego
+        : juego,
     );
+
+    toast.success("Se agrego una unidad del producto", {
+      position: "top-right",
+      autoClose: 2000,
+    });
 
     setCarrito(nuevoCarrito);
     localStorage.setItem("carrito", JSON.stringify(nuevoCarrito));
   };
 
   const disminuirCantidad = (id) => {
+    const juegoActual = carrito.find((juego) => juego.id === id);
+
+    if (juegoActual && juegoActual.cantidad > 1) {
+      toast.info("Se restó una unidad del producto", {
+        position: "top-right",
+        autoClose: 2000,
+      });
+    }
+
     const nuevoCarrito = carrito
       .map((juego) =>
         juego.id === id
           ? { ...juego, cantidad: (juego.cantidad || 1) - 1 }
-          : juego
+          : juego,
       )
       .filter((juego) => (juego.cantidad || 1) > 0);
 
@@ -38,32 +53,48 @@ function Carrito({ carrito, setCarrito }) {
   const total = carrito.reduce(
     (acumulador, juego) =>
       acumulador + obtenerPrecio(juego) * (juego.cantidad || 1),
-    0
+    0,
   );
+
+  const [showModal, setShowModal] = useState(false);
+
+  const handleOpenModal = () => {
+    if (carrito.length === 0) return;
+    setShowModal(true);
+  };
 
   const eliminarProducto = (id) => {
     const nuevoCarrito = carrito.filter((juego) => juego.id !== id);
 
     setCarrito(nuevoCarrito);
     localStorage.setItem("carrito", JSON.stringify(nuevoCarrito));
+
+    toast.error("El juego fue eliminado del carrito", {
+      position: "top-right",
+      autoClose: 2500,
+    });
   };
 
   const limpiarCarrito = () => {
     if (carrito.length === 0) return;
 
-    const confirmar = window.confirm(
-      "Estas seguro de que quieres eliminar todos los productos del carrito?"
-    );
+    setShowModal(true);
+  };
 
-    if (!confirmar) return;
-
+  const confirmarBorrarTodo = () => {
     setCarrito([]);
-    localStorage.setItem("carrito", JSON.stringify([]));
+    localStorage.removeItem("carrito");
+    setShowModal(false);
+
+    toast.alert("Se ha vaciado el carrito por completo", {
+      position: "top-right",
+      autoClose: 2500,
+    });
   };
 
   const comprar = async () => {
     const usuarioActivo = JSON.parse(
-      localStorage.getItem("usuarioActivo") || "null"
+      localStorage.getItem("usuarioActivo") || "null",
     );
 
     if (!usuarioActivo) {
@@ -82,7 +113,7 @@ function Carrito({ carrito, setCarrito }) {
 
       const items = carrito.map((juego) => ({
         gameId: juego.id,
-        quantity: juego.cantidad || 1,  
+        quantity: juego.cantidad || 1,
       }));
 
       await crearCompra(items);
@@ -152,8 +183,8 @@ function Carrito({ carrito, setCarrito }) {
                       className="mt-2"
                       onClick={() => eliminarProducto(juego.id)}
                       disabled={comprando}
-                      >
-                        Borrar
+                    >
+                      Borrar
                     </Button>
                   </div>
 
@@ -185,6 +216,23 @@ function Carrito({ carrito, setCarrito }) {
               </Button>
             </Card>
           </div>
+          <Modal show={showModal} onHide={() => setShowModal(false)}>
+            <Modal.Header closeButton>
+              <Modal.Title>Vaciar carrito</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              ¿Estás seguro de que quieres eliminar todos los productos del
+              carrito?
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={() => setShowModal(false)}>
+                Cancelar
+              </Button>
+              <Button variant="danger" onClick={confirmarBorrarTodo}>
+                Sí, borrar todo
+              </Button>
+            </Modal.Footer>
+          </Modal>
         </div>
       )}
     </div>
