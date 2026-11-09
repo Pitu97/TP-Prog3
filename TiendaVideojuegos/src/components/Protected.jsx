@@ -1,15 +1,23 @@
 import { Navigate, Outlet } from "react-router-dom";
 
 function Protected({ rolesPermitidos }) {
-  const usuarioActivo = JSON.parse(localStorage.getItem("usuarioActivo"));
+  let usuarioActivo = null;
 
-  if (!usuarioActivo) {
+  try {
+    usuarioActivo = JSON.parse(localStorage.getItem("usuarioActivo") || "null");
+  } catch {
+    localStorage.removeItem("usuarioActivo");
+  }
+
+  const token = localStorage.getItem("token");
+
+  if (!token || !usuarioActivo || !usuarioActivo.roleId) {
     return <Navigate to="/login" replace />;
   }
 
-  const rolUsuario = usuarioActivo.roleId || 3;
+  const rolUsuario = Number(usuarioActivo.roleId);
+
   if (rolesPermitidos && !rolesPermitidos.includes(rolUsuario)) {
-    alert("No tenés permisos de administrador para acceder a esta sección.");
     return <Navigate to="/" replace />;
   }
 

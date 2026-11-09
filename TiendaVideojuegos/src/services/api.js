@@ -1,5 +1,22 @@
 const API_URL = "http://localhost:3000";
 
+const fetchConSesion = async (url, opciones = {}) => {
+  const response = await fetch(url, opciones);
+
+  const tieneToken =
+    opciones.headers?.Authorization ||
+    opciones.headers?.authorization;
+
+  if (response.status === 401 && tieneToken) {
+    localStorage.removeItem("token");
+    localStorage.removeItem("usuarioActivo");
+
+    window.location.assign("/login");
+  }
+
+  return response;
+};
+
 // OBTENER JUEGOS
 
 export const obtenerJuegos = async () => {
@@ -17,7 +34,7 @@ export const obtenerJuegos = async () => {
 export const crearJuego = async (juego) => {
   const token = localStorage.getItem("token");
 
-  const response = await fetch(`${API_URL}/games`, {
+  const response = await fetchConSesion(`${API_URL}/games`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -40,7 +57,7 @@ export const crearJuego = async (juego) => {
 export const actualizarJuego = async (id, juego) => {
   const token = localStorage.getItem("token");
 
-  const response = await fetch(`${API_URL}/games/${id}`, {
+  const response = await fetchConSesion(`${API_URL}/games/${id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -63,7 +80,7 @@ export const actualizarJuego = async (id, juego) => {
 export const eliminarJuego = async (id) => {
   const token = localStorage.getItem("token");
 
-  const response = await fetch(`${API_URL}/games/${id}`, {
+  const response = await fetchConSesion(`${API_URL}/games/${id}`, {
     method: "DELETE",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -106,7 +123,7 @@ export const obtenerCategorias = async () => {
 export const obtenerUsuarios = async () => {
   const token = localStorage.getItem("token");
 
-  const response = await fetch(`${API_URL}/admin/users`, {
+  const response = await fetchConSesion(`${API_URL}/admin/users`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -126,7 +143,7 @@ export const obtenerUsuarios = async () => {
 export const actualizarRolUsuario = async (id, roleId) => {
   const token = localStorage.getItem("token");
 
-  const response = await fetch(`${API_URL}/admin/users/${id}`, {
+  const response = await fetchConSesion(`${API_URL}/admin/users/${id}`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
@@ -149,7 +166,7 @@ export const actualizarRolUsuario = async (id, roleId) => {
 export const eliminarUsuario = async (id) => {
   const token = localStorage.getItem("token");
 
-  const response = await fetch(`${API_URL}/admin/users/${id}`, {
+  const response = await fetchConSesion(`${API_URL}/admin/users/${id}`, {
     method: "DELETE",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -170,7 +187,7 @@ export const eliminarUsuario = async (id) => {
 export const crearAdmin = async (usuario) => {
   const token = localStorage.getItem("token");
 
-  const response = await fetch(`${API_URL}/users/admin`, {
+  const response = await fetchConSesion(`${API_URL}/users/admin`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -233,7 +250,7 @@ export const iniciarSesion = async (credenciales) => {
 export const crearCompra = async (items) => {
   const token = localStorage.getItem("token");
 
-  const response = await fetch(`${API_URL}/purchases`, {
+  const response = await fetchConSesion(`${API_URL}/purchases`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -255,7 +272,7 @@ export const crearCompra = async (items) => {
 export const obtenerHistorialCompras = async () => {
   const token = localStorage.getItem("token");
 
-  const response = await fetch(`${API_URL}/purchases`, {
+  const response = await fetchConSesion(`${API_URL}/purchases`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -274,7 +291,7 @@ export const obtenerHistorialCompras = async () => {
 export const crearCategoria = async (name) => {
   const token = localStorage.getItem("token");
 
-  const response = await fetch(`${API_URL}/categories`, {
+  const response = await fetchConSesion(`${API_URL}/categories`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -296,7 +313,7 @@ export const crearCategoria = async (name) => {
 export const actualizarCategoria = async (id, name) => {
   const token = localStorage.getItem("token");
 
-  const response = await fetch(`${API_URL}/categories/${id}`, {
+  const response = await fetchConSesion(`${API_URL}/categories/${id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -318,7 +335,7 @@ export const actualizarCategoria = async (id, name) => {
 export const eliminarCategoria = async (id) => {
   const token = localStorage.getItem("token");
 
-  const response = await fetch(`${API_URL}/categories/${id}`, {
+  const response = await fetchConSesion(`${API_URL}/categories/${id}`, {
     method: "DELETE",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -339,7 +356,7 @@ export const eliminarCategoria = async (id) => {
 export const obtenerTodasCompras = async () => {
   const token = localStorage.getItem("token");
 
-  const response = await fetch(`${API_URL}/admin/purchases`, {
+  const response = await fetchConSesion(`${API_URL}/admin/purchases`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -361,7 +378,7 @@ export const obtenerTodasCompras = async () => {
 export const actualizarEstadoCompra = async (id, status) => {
   const token = localStorage.getItem("token");
 
-  const response = await fetch(
+  const response = await fetchConSesion(
     `${API_URL}/admin/purchases/${id}/status`,
     {
       method: "PATCH",

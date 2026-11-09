@@ -111,8 +111,9 @@ function Perfil() {
   }, [usuarioActivo?.roleId]);
 
   const cerrarSesion = () => {
+    localStorage.removeItem("token");
     localStorage.removeItem("usuarioActivo");
-    navigate("/login");
+    navigate("/login", { replace: true });
   };
 
   const handlerCrearAdmin = async (e) => {
@@ -251,33 +252,37 @@ function Perfil() {
         <button onClick={cerrarSesion}>Cerrar sesión</button>
       </div>
 
-      <h2>Historial de compras</h2>
+      {usuarioActivo.roleId === 3 && (
+        <div>
+          <h2>Historial de compras</h2>
 
-      {cargandoCompras ? (
-        <p>Cargando historial de compras...</p>
-      ) : errorCompras ? (
-        <p>{errorCompras}</p>
-      ) : compras.length === 0 ? (
-        <p>Todavía no realizaste ninguna compra.</p>
-      ) : (
-        compras.map((compra) => (
-          <div key={compra.id} className="border rounded p-3 mb-3">
-            <h5>
-              Compra del {new Date(compra.date).toLocaleDateString("es-AR")}
-            </h5>
+          {cargandoCompras ? (
+            <p>Cargando historial de compras...</p>
+          ) : errorCompras ? (
+            <p>{errorCompras}</p>
+          ) : compras.length === 0 ? (
+            <p>Todavía no realizaste ninguna compra.</p>
+          ) : (
+            compras.map((compra) => (
+              <div key={compra.id} className="border rounded p-3 mb-3">
+                <h5>
+                  Compra del {new Date(compra.date).toLocaleDateString("es-AR")}
+                </h5>
 
-            <p>Estado: {compra.status}</p>
+                <p>Estado: {compra.status}</p>
 
-            {compra.detalleCompras.map((detalle) => (
-              <p key={detalle.id}>
-                {detalle.videojuego.name} — Cantidad: {detalle.quantity} — $
-                {(Number(detalle.unitPrice) * detalle.quantity).toFixed(2)}
-              </p>
-            ))}
+                {compra.detalleCompras.map((detalle) => (
+                  <p key={detalle.id}>
+                    {detalle.videojuego.name} — Cantidad: {detalle.quantity} — $
+                    {(Number(detalle.unitPrice) * detalle.quantity).toFixed(2)}
+                  </p>
+                ))}
 
-            <h5>Total: ${Number(compra.total).toFixed(2)}</h5>
-          </div>
-        ))
+                <h5>Total: ${Number(compra.total).toFixed(2)}</h5>
+              </div>
+            ))
+          )}
+        </div>
       )}
 
       {/* panel del superadm */}

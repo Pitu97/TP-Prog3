@@ -9,8 +9,20 @@ import { toast } from "react-toastify";
 function Carrito({ carrito, setCarrito }) {
   const navigate = useNavigate();
   const { colores } = useTheme();
-  const obtenerPrecio = (juego) => Number(juego.price) || 0;
   const [comprando, setComprando] = useState(false);
+
+  const obtenerPrecio = (juego) => {
+    const precio = Number(juego.price);
+
+    return Number.isFinite(precio) && precio > 0 ? precio : null;
+  };
+
+  const carritoValido = carrito.every((juego) => {
+    const precio = obtenerPrecio(juego);
+    const cantidad = Number(juego.cantidad || 1);
+
+    return precio !== null && Number.isInteger(cantidad) && cantidad > 0;
+  });
 
   const aumentarCantidad = (id) => {
     const nuevoCarrito = carrito.map((juego) =>
@@ -50,11 +62,11 @@ function Carrito({ carrito, setCarrito }) {
     localStorage.setItem("carrito", JSON.stringify(nuevoCarrito));
   };
 
-  const total = carrito.reduce(
-    (acumulador, juego) =>
-      acumulador + obtenerPrecio(juego) * (juego.cantidad || 1),
-    0,
-  );
+  const total = carrito.reduce((acumulador, juego) => {
+    const precio = obtenerPrecio(juego);
+
+    return acumulador + (precio ?? 0) * (juego.cantidad || 1);
+  }, 0);
 
   const [showModal, setShowModal] = useState(false);
 
@@ -108,6 +120,13 @@ function Carrito({ carrito, setCarrito }) {
       return;
     }
 
+    if (!carritoValido) {
+      toast.error(
+        "Hay productos con precios inválidos. Revisá el carrito antes de continuar.",
+      );
+      return;
+    }
+
     try {
       setComprando(true);
 
@@ -156,7 +175,12 @@ function Carrito({ carrito, setCarrito }) {
                   <div className="flex-grow-1">
                     <Card.Title>{juego.name}</Card.Title>
 
-                    <p>Precio unitario: ${obtenerPrecio(juego).toFixed(2)}</p>
+                    <p>
+                      Precio unitario:{" "}
+                      {obtenerPrecio(juego) !== null
+                        ? `$${obtenerPrecio(juego).toFixed(2)}`
+                        : "Precio no disponible"}
+                    </p>
 
                     <div className="d-flex align-items-center gap-2">
                       <Button
@@ -189,7 +213,9 @@ function Carrito({ carrito, setCarrito }) {
                   </div>
 
                   <strong>
-                    ${(obtenerPrecio(juego) * (juego.cantidad || 1)).toFixed(2)}
+                    {obtenerPrecio(juego) !== null
+                      ? `$${(obtenerPrecio(juego) * (juego.cantidad || 1)).toFixed(2)}`
+                      : "Precio no disponible"}
                   </strong>
                 </div>
               </Card>
@@ -204,7 +230,7 @@ function Carrito({ carrito, setCarrito }) {
                 Total: <strong>${total.toFixed(2)}</strong>
               </Card.Text>
 
-              <Button variant="success" onClick={comprar} disabled={comprando}>
+              <Button variant="success" onClick={comprar} disabled={comprando || !carritoValido}>
                 {comprando ? "Procesando..." : "Confirmar compra"}
               </Button>
               <Button
