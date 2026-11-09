@@ -368,15 +368,15 @@ function Perfil() {
               <tbody>
                 {cargandoUsuarios ? (
                   <tr>
-                    <td>"Cargando usuarios..."</td>
+                    <td>Cargando usuarios...</td>
                   </tr>
                 ) : errorUsuarios ? (
                   <tr>
-                    <td colSpan={4}>{errorUsuarios}</td>
+                    <td colSpan={5}>{errorUsuarios}</td>
                   </tr>
                 ) : usuarios.length === 0 ? (
                   <tr>
-                    <td colSpan={4}>No hay usuarios registrados</td>
+                    <td colSpan={5}>No hay usuarios registrados</td>
                   </tr>
                 ) : (
                   usuarios.map((u) => (
