@@ -2,6 +2,9 @@ import { useState } from "react";
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
 
 function NuevoJuego({ agregarJuego, categorias, cargandoCategorias }) {
+  const [guardando, setGuardando] = useState(false);
+  const [error, setError] = useState("");
+
   const [juego, setJuego] = useState({
     name: "",
     description: "",
@@ -18,8 +21,11 @@ function NuevoJuego({ agregarJuego, categorias, cargandoCategorias }) {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    setGuardando(true);
+    setError("");
 
     const nuevoJuego = {
       ...juego,
@@ -27,20 +33,25 @@ function NuevoJuego({ agregarJuego, categorias, cargandoCategorias }) {
       categoryId: Number(juego.categoryId),
     };
 
-    console.log("Juego enviado:", nuevoJuego);
+    try {
+      await agregarJuego(nuevoJuego);
 
-    agregarJuego(nuevoJuego);
+      alert("Juego agregado correctamente");
 
-    alert("Juego agregado correctamente");
-
-    setJuego({
-      name: "",
-      description: "",
-      price: "",
-      platform: "",
-      categoryId: "",
-      image: "",
-    });
+      setJuego({
+        name: "",
+        description: "",
+        price: "",
+        platform: "",
+        categoryId: "",
+        image: "",
+      });
+    } catch (error) {
+      console.error(error);
+      setError(error.message || "No se pudo agregar el videojuego");
+    } finally {
+      setGuardando(false);
+    }
   };
 
   return (
@@ -136,9 +147,15 @@ function NuevoJuego({ agregarJuego, categorias, cargandoCategorias }) {
               />
             </Form.Group>
 
+            {error && <p className="text-danger mb-3">{error}</p>}
+
             <div className="d-grid">
-              <Button type="submit" variant="primary">
-                Agregar juego
+              <Button
+                type="submit"
+                variant="primary"
+                disabled={guardando || cargandoCategorias}
+              >
+                {guardando ? "Guardando..." : "Agregar juego"}
               </Button>
             </div>
           </Form>

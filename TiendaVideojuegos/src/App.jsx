@@ -7,7 +7,13 @@ import Dashboard from "./pages/Dashboard";
 import Catalogo from "./pages/Catalogo";
 import Carrito from "./pages/Carrito";
 import Login from "./pages/Login";
-import { obtenerJuegos, obtenerCategorias } from "./services/api";
+import {
+  obtenerJuegos,
+  obtenerCategorias,
+  crearJuego,
+  actualizarJuego,
+} from "./services/api";
+import EditarJuego from "./components/EditarJuego";
 import DetalleJuego from "./pages/DetalleJuego";
 import { colores } from "./data/theme";
 import Perfil from "./pages/Perfil";
@@ -66,8 +72,24 @@ function App() {
     cargarCategorias();
   }, []);
 
-  const agregarJuego = (nuevoJuego) => {
-    setJuegos((juegosActuales) => [...juegosActuales, nuevoJuego]);
+  const agregarJuego = async (nuevoJuego) => {
+    const juegoCreado = await crearJuego(nuevoJuego);
+
+    setJuegos((juegosActuales) => [...juegosActuales, juegoCreado]);
+
+    return juegoCreado;
+  };
+
+  const editarJuego = async (id, datosActualizados) => {
+    const juegoActualizado = await actualizarJuego(id, datosActualizados);
+
+    setJuegos((juegosActuales) =>
+      juegosActuales.map((juego) =>
+        Number(juego.id) === Number(id) ? juegoActualizado : juego,
+      ),
+    );
+
+    return juegoActualizado;
   };
 
   const agregarAlCarrito = (juego) => {
@@ -92,9 +114,9 @@ function App() {
         carritoActualizado = carritoActual.map((juegoCarrito) =>
           juegoCarrito.id === juego.id
             ? {
-              ...juegoCarrito,
-              cantidad: (juegoCarrito.cantidad || 1) + 1,
-            }
+                ...juegoCarrito,
+                cantidad: (juegoCarrito.cantidad || 1) + 1,
+              }
             : juegoCarrito,
         );
       } else {
@@ -164,9 +186,10 @@ function App() {
                 <Route path="/perfil" element={<Perfil />} />
                 <Route
                   path="/carrito"
-                  element={<Carrito carrito={carrito} setCarrito={setCarrito} />}
+                  element={
+                    <Carrito carrito={carrito} setCarrito={setCarrito} />
+                  }
                 />
-
               </Route>
               <Route element={<Protected rolesPermitidos={[1, 2]} />}>
                 <Route
@@ -190,7 +213,18 @@ function App() {
                     />
                   }
                 />
-
+                <Route
+                  path="/EditarJuego/:id"
+                  element={
+                    <EditarJuego
+                      juegos={juegos}
+                      editarJuego={editarJuego}
+                      categorias={categorias}
+                      cargandoCategorias={cargandoCategorias}
+                      cargandoJuegos={cargando}
+                    />
+                  }
+                />
               </Route>
             </Routes>
             <ToastContainer

@@ -6,6 +6,11 @@ import { useTheme } from "../context/ThemeContext";
 function Tarjeta({ title, price, image, agregarAlCarrito, juego }) {
   const navigate = useNavigate();
   const { colores } = useTheme();
+  const usuarioActivo = JSON.parse(
+    localStorage.getItem("usuarioActivo") || "null",
+  );
+
+  const esAdmin = usuarioActivo?.roleId === 1 || usuarioActivo?.roleId === 2;
 
   const verDetalle = () => {
     if (juego) {
@@ -58,6 +63,15 @@ function Tarjeta({ title, price, image, agregarAlCarrito, juego }) {
         >
           Agregar al carrito
         </Button>
+        {esAdmin && (
+          <Button
+            className="mt-2 w-100"
+            variant="warning"
+            onClick={() => navigate(`/EditarJuego/${juego.id}`)}
+          >
+            Editar juego
+          </Button>
+        )}
       </Card.Body>
     </Card>
   );
