@@ -1,5 +1,7 @@
 const API_URL = "http://localhost:3000";
 
+// OBTENER JUEGOS
+
 export const obtenerJuegos = async () => {
   const response = await fetch(`${API_URL}/games`);
 
@@ -9,6 +11,8 @@ export const obtenerJuegos = async () => {
 
   return await response.json();
 };
+
+//CREAR JUEGO
 
 export const crearJuego = async (juego) => {
   const token = localStorage.getItem("token");
@@ -31,6 +35,8 @@ export const crearJuego = async (juego) => {
   return datos;
 };
 
+//ACTUALIZAR JUEGO
+
 export const actualizarJuego = async (id, juego) => {
   const token = localStorage.getItem("token");
 
@@ -51,6 +57,8 @@ export const actualizarJuego = async (id, juego) => {
 
   return datos;
 };
+
+//ELIMINAR JUEGO
 
 export const eliminarJuego = async (id) => {
   const token = localStorage.getItem("token");
@@ -81,6 +89,8 @@ export const eliminarJuego = async (id) => {
   return datos;
 };
 
+//OBTENER CATEGORIAS
+
 export const obtenerCategorias = async () => {
   const response = await fetch(`${API_URL}/categories`);
 
@@ -90,6 +100,8 @@ export const obtenerCategorias = async () => {
 
   return await response.json();
 };
+
+//OBTENER USUARIOS
 
 export const obtenerUsuarios = async () => {
   const token = localStorage.getItem("token");
@@ -108,6 +120,8 @@ export const obtenerUsuarios = async () => {
 
   return datos;
 };
+
+//ACTUALIZAR ROL DE USUARIO
 
 export const actualizarRolUsuario = async (id, roleId) => {
   const token = localStorage.getItem("token");
@@ -130,6 +144,7 @@ export const actualizarRolUsuario = async (id, roleId) => {
   return datos.user;
 }
 
+// REGISTRAR USUARIO
 
 export const registrarUsuario = async (usuario) => {
   const response = await fetch(`${API_URL}/users/register`, {
@@ -149,6 +164,8 @@ export const registrarUsuario = async (usuario) => {
   return datos;
 };
 
+//INICIAR SESION
+
 export const iniciarSesion = async (credenciales) => {
   const response = await fetch(`${API_URL}/users/login`, {
     method: "POST",
@@ -166,6 +183,8 @@ export const iniciarSesion = async (credenciales) => {
 
   return datos;
 };
+
+//CREAR COMPRA
 
 export const crearCompra = async (items) => {
   const token = localStorage.getItem("token");
@@ -188,7 +207,7 @@ export const crearCompra = async (items) => {
   return datos.purchase;
 };
 
-
+// OBTENER EL HISTORIAL DE COMPRAS
 export const obtenerHistorialCompras = async () => {
   const token = localStorage.getItem("token");
 
@@ -269,4 +288,54 @@ export const eliminarCategoria = async (id) => {
   }
 
   return datos;
+};
+
+// OBTENER TODAS LAS COMPRAS (ADMIN)
+
+export const obtenerTodasCompras = async () => {
+  const token = localStorage.getItem("token");
+
+  const response = await fetch(`${API_URL}/admin/purchases`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const datos = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      datos.message || "Error al obtener todas las compras"
+    );
+  }
+
+  return datos;
+};
+
+// ACTUALIZAR ESTADO DE UNA COMPRA (ADMIN)
+
+export const actualizarEstadoCompra = async (id, status) => {
+  const token = localStorage.getItem("token");
+
+  const response = await fetch(
+    `${API_URL}/admin/purchases/${id}/status`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ status }),
+    }
+  );
+
+  const datos = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      datos.message || "Error al actualizar el estado de la compra"
+    );
+  }
+
+  return datos.purchase;
 };

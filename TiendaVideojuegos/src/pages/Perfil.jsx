@@ -7,6 +7,8 @@ import {
   obtenerUsuarios,
   actualizarRolUsuario,
   obtenerHistorialCompras,
+  obtenerTodasCompras,
+  actualizarEstadoCompra,
 } from "../services/api";
 
 function Perfil() {
@@ -26,6 +28,11 @@ function Perfil() {
   const [compras, setCompras] = useState([]);
   const [cargandoCompras, setCargandoCompras] = useState(true);
   const [errorCompras, setErrorCompras] = useState("");
+
+  const [todasLasCompras, setTodasLasCompras] = useState([]);
+  const [cargandoTodasLasCompras, setCargandoTodasLasCompras] = useState(true);
+  const [errorTodasLasCompras, setErrorTodasLasCompras] = useState("");
+  const [actualizandoCompra, setActualizandoCompra] = useState(null);
 
   useEffect(() => {
     if (usuarioActivo?.roleId !== 1) {
@@ -69,6 +76,29 @@ function Perfil() {
     cargarCompras();
   }, [usuarioActivo?.roleId]);
 
+  useEffect(() => {
+    if (![1, 2].includes(usuarioActivo?.roleId)) {
+      setCargandoTodasLasCompras(false);
+      return;
+    }
+
+    const cargarTodasLasCompras = async () => {
+      try {
+        const datos = await obtenerTodasCompras();
+        setTodasLasCompras(
+          Array.isArray(datos) ? datos : datos.purchases || [],
+        );
+      } catch (error) {
+        console.error(error);
+        setErrorTodasLasCompras(error.message);
+      } finally {
+        setCargandoTodasLasCompras(false);
+      }
+    };
+
+    cargarTodasLasCompras();
+  }, [usuarioActivo?.roleId]);
+
   const cerrarSesion = () => {
     localStorage.removeItem("usuarioActivo");
     navigate("/login");
@@ -93,6 +123,34 @@ function Perfil() {
       alert(error.message);
     } finally {
       setActualizandoRol(null);
+    }
+  };
+
+  const cambiarEstadoCompra = async (idCompra, nuevoEstado) => {
+    try {
+      setActualizandoCompra(idCompra);
+
+      const compraActualizada = await actualizarEstadoCompra(
+        idCompra,
+        nuevoEstado,
+      );
+
+      setTodasLasCompras((comprasActuales) =>
+        comprasActuales.map((compra) =>
+          compra.id === idCompra
+            ? {
+                ...compra,
+                ...compraActualizada,
+                status: nuevoEstado,
+              }
+            : compra,
+        ),
+      );
+    } catch (error) {
+      console.error(error);
+      alert(error.message);
+    } finally {
+      setActualizandoCompra(null);
     }
   };
 
@@ -237,6 +295,92 @@ function Perfil() {
               )}
             </tbody>
           </Table>
+        </div>
+      )}
+
+      {/* Panel de administracion de compras */}
+      {[1, 2].includes(usuarioActivo.roleId) && (
+        <div
+          className="mt-5 p-4 rounded"
+          style={{
+            backgroundColor: colores.card,
+            border: `1px solid ${colores.primary}`,
+          }}
+        >
+          <h3 style={{ color: colores.primary, marginBottom: "20px" }}>
+            Administración de Compras
+          </h3>
+
+          {cargandoTodasLasCompras ? (
+            <p>Cargando compras...</p>
+          ) : errorTodasLasCompras ? (
+            <p>{errorTodasLasCompras}</p>
+          ) : todasLasCompras.length === 0 ? (
+            <p>No hay compras registradas.</p>
+          ) : (
+            <Table striped bordered hover variant="dark" responsive>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Cliente</th>
+                  <th>Fecha</th>
+                  <th>Videojuegos</th>
+                  <th>Total</th>
+                  <th>Estado</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {todasLasCompras.map((compra) => (
+                  <tr key={compra.id}>
+                    <td>{compra.id}</td>
+
+                    <td>
+                      {compra.usuario?.name || "Sin nombre"}
+                      <br />
+                      <small>{compra.usuario?.email || "Sin email"}</small>
+                    </td>
+
+                    <td>{new Date(compra.date).toLocaleDateString("es-AR")}</td>
+
+                    <td>
+                      {compra.detalleCompras?.map((detalle) => (
+                        <div key={detalle.id}>
+                          {detalle.videojuego?.name || "Videojuego"} x{" "}
+                          {detalle.quantity}
+                        </div>
+                      ))}
+                    </td>
+
+                    <td>${Number(compra.total).toFixed(2)}</td>
+
+                    <td>
+                      <Form.Select
+                        size="sm"
+                        value={compra.status}
+                        disabled={
+                          compra.status !== "pending" ||
+                          actualizandoCompra === compra.id
+                        }
+                        onChange={(e) =>
+                          cambiarEstadoCompra(compra.id, e.target.value)
+                        }
+                        style={{
+                          backgroundColor: colores.background,
+                          color: colores.textMain,
+                          border: `1px solid ${colores.secondary}`,
+                        }}
+                      >
+                        <option value="pending">Pendiente</option>
+                        <option value="paid">Pagada</option>
+                        <option value="cancelled">Cancelada</option>
+                      </Form.Select>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          )}
         </div>
       )}
     </div>
