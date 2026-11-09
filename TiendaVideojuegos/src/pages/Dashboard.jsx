@@ -2,6 +2,7 @@ import Carrusel from "../components/Carrusel";
 import Tarjeta from "../components/Tarjeta";
 import Categorias from "../components/Categorias";
 import { colores } from "../data/theme";
+import { useNavigate } from "react-router-dom";
 
 function Dashboard({
   juegos,
@@ -10,6 +11,7 @@ function Dashboard({
   cargandoCategorias,
   eliminarJuego,
 }) {
+  const navigate = useNavigate();
   const juegosDestacados = juegos.slice(3, 8);
 
   return (

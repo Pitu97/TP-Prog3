@@ -86,7 +86,7 @@ function Carrito({ carrito, setCarrito }) {
     localStorage.removeItem("carrito");
     setShowModal(false);
 
-    toast.alert("Se ha vaciado el carrito por completo", {
+    toast.info("Se ha vaciado el carrito por completo", {
       position: "top-right",
       autoClose: 2500,
     });

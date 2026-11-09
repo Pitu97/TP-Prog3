@@ -1,11 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
 
-function Categorias({ categorias = [], cargando }) {
+function Categorias({ categorias = [], cargandoCategorias }) {
   const navigate = useNavigate();
   const { colores } = useTheme();
 
-  if (cargando) {
+  if (cargandoCategorias) {
     return <p style={{ color: colores.textMuted }}>Cargando categorías...</p>;
   }
 
