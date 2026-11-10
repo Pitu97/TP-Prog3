@@ -77,8 +77,6 @@ function NuevaCategoria({ categorias, setCategorias, cargandoCategorias }) {
 
     try {
       setGuardando(true);
-      setError("");
-      setMensaje("");
 
       if (idEditando !== null) {
         const categoriaActualizada = await actualizarCategoria(
