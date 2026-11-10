@@ -1,7 +1,8 @@
 import Carousel from "react-bootstrap/Carousel";
-import { colores } from "../data/theme";
+import { useTheme } from "../context/ThemeContext";
 
 function Carrusel({ juegos }) {
+  const { colores, modo } = useTheme();
   const juegosDestacados = juegos ? juegos.slice(0, 3) : [];
 
   return (
@@ -16,7 +17,10 @@ function Carrusel({ juegos }) {
           />
           <Carousel.Caption
             style={{
-              backgroundColor: "rgba(11, 13, 20, 0.75)",
+              backgroundColor:
+                modo === "oscuro"
+                  ? "rgba(11, 13, 20, 0.85)"
+                  : "rgba(255, 255, 255, 0.85)",
               borderRadius: "8px",
               padding: "15px",
             }}
