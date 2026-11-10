@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import "./App.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { ThemeProvider } from "./context/ThemeContext";
+import { useTheme } from "./context/ThemeContext";
 import Protected from "./components/Protected";
 import Dashboard from "./pages/Dashboard";
 import Catalogo from "./pages/Catalogo";
@@ -16,7 +16,6 @@ import {
 } from "./services/api";
 import EditarJuego from "./components/EditarJuego";
 import DetalleJuego from "./pages/DetalleJuego";
-import { colores } from "./data/theme";
 import Perfil from "./pages/Perfil";
 import BarraNav from "./components/BarraNav";
 import Footer from "./components/Footer";
@@ -27,6 +26,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 function App() {
+  const { colores } = useTheme();
   const [juegos, setJuegos] = useState([]);
   const [cargando, setCargando] = useState(true);
 
@@ -96,9 +96,9 @@ function App() {
   const eliminarJuego = async (id) => {
     await eliminarJuegoAPI(id);
 
-    setJuegos((juegosActuales) => juegosActuales.filter(
-      (juego) => Number(juego.id) !== Number(id)
-    ));
+    setJuegos((juegosActuales) =>
+      juegosActuales.filter((juego) => Number(juego.id) !== Number(id)),
+    );
   };
 
   const agregarAlCarrito = (juego) => {
@@ -137,126 +137,130 @@ function App() {
     });
   };
   return (
-    <ThemeProvider>
-      <BrowserRouter>
-        <div
-          className="d-flex flex-column min-vh-100"
-          style={{
-            backgroundColor: colores.background,
-            minHeight: "100vh",
-            color: colores.textMain,
-          }}
-        >
-          <BarraNav setBusqueda={setBusqueda} />
+    <BrowserRouter>
+      <div
+        className="d-flex flex-column min-vh-100"
+        style={{
+          "--color-background": colores.background,
+          "--color-card": colores.card,
+          "--color-surface": colores.surface,
+          "--color-primary": colores.primary,
+          "--color-secondary": colores.secondary,
+          "--color-text": colores.textMain,
+          "--color-muted": colores.textMuted,
+          "--color-border": colores.border,
+          backgroundColor: colores.background,
+          minHeight: "100vh",
+          color: colores.textMain,
+        }}
+      >
+        <BarraNav setBusqueda={setBusqueda} />
 
-          <main className="flex-grow-1">
-            {cargando && <p>Cargando videojuegos...</p>}
+        <main className="flex-grow-1">
+          {cargando && <p>Cargando videojuegos...</p>}
 
-            {error && <p>{error}</p>}
-            <Routes>
+          {error && <p>{error}</p>}
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <Dashboard
+                  juegos={juegos}
+                  agregarAlCarrito={agregarAlCarrito}
+                  categorias={categorias}
+                  cargandoCategorias={cargandoCategorias}
+                  eliminarJuego={eliminarJuego}
+                />
+              }
+            />
+
+            <Route path="/login" element={<Login />} />
+
+            <Route
+              path="/detalleJuego/:id"
+              element={
+                <DetalleJuego
+                  juegos={juegos}
+                  categorias={categorias}
+                  agregarAlCarrito={agregarAlCarrito}
+                />
+              }
+            />
+
+            <Route
+              path="/catalogo"
+              element={
+                <Catalogo
+                  juegos={juegos}
+                  categorias={categorias}
+                  agregarAlCarrito={agregarAlCarrito}
+                  busqueda={busqueda}
+                  setBusqueda={setBusqueda}
+                  eliminarJuego={eliminarJuego}
+                />
+              }
+            />
+
+            <Route element={<Protected rolesPermitidos={[3, 2, 1]} />}>
+              <Route path="/perfil" element={<Perfil />} />
               <Route
-                path="/"
+                path="/carrito"
+                element={<Carrito carrito={carrito} setCarrito={setCarrito} />}
+              />
+            </Route>
+            <Route element={<Protected rolesPermitidos={[1, 2]} />}>
+              <Route
+                path="/NuevoJuego"
                 element={
-                  <Dashboard
-                    juegos={juegos}
-                    agregarAlCarrito={agregarAlCarrito}
+                  <NuevoJuego
+                    agregarJuego={agregarJuego}
                     categorias={categorias}
                     cargandoCategorias={cargandoCategorias}
-                    eliminarJuego={eliminarJuego}
-                  />
-                }
-              />
-
-              <Route path="/login" element={<Login />} />
-
-              <Route
-                path="/detalleJuego/:id"
-                element={
-                  <DetalleJuego
-                    juegos={juegos}
-                    categorias={categorias}
-                    agregarAlCarrito={agregarAlCarrito}
                   />
                 }
               />
 
               <Route
-                path="/catalogo"
+                path="/NuevaCategoria"
                 element={
-                  <Catalogo
-                    juegos={juegos}
+                  <NuevaCategoria
                     categorias={categorias}
-                    agregarAlCarrito={agregarAlCarrito}
-                    busqueda={busqueda}
-                    setBusqueda={setBusqueda}
-                    eliminarJuego={eliminarJuego}
+                    setCategorias={setCategorias}
+                    cargandoCategorias={cargandoCategorias}
                   />
                 }
               />
+              <Route
+                path="/EditarJuego/:id"
+                element={
+                  <EditarJuego
+                    juegos={juegos}
+                    editarJuego={editarJuego}
+                    categorias={categorias}
+                    cargandoCategorias={cargandoCategorias}
+                    cargandoJuegos={cargando}
+                  />
+                }
+              />
+            </Route>
+          </Routes>
+          <ToastContainer
+            position="top-right"
+            autoClose={3000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+          />
+        </main>
 
-              <Route element={<Protected rolesPermitidos={[3, 2, 1]} />}>
-                <Route path="/perfil" element={<Perfil />} />
-                <Route
-                  path="/carrito"
-                  element={
-                    <Carrito carrito={carrito} setCarrito={setCarrito} />
-                  }
-                />
-              </Route>
-              <Route element={<Protected rolesPermitidos={[1, 2]} />}>
-                <Route
-                  path="/NuevoJuego"
-                  element={
-                    <NuevoJuego
-                      agregarJuego={agregarJuego}
-                      categorias={categorias}
-                      cargandoCategorias={cargandoCategorias}
-                    />
-                  }
-                />
-
-                <Route
-                  path="/NuevaCategoria"
-                  element={
-                    <NuevaCategoria
-                      categorias={categorias}
-                      setCategorias={setCategorias}
-                      cargandoCategorias={cargandoCategorias}
-                    />
-                  }
-                />
-                <Route
-                  path="/EditarJuego/:id"
-                  element={
-                    <EditarJuego
-                      juegos={juegos}
-                      editarJuego={editarJuego}
-                      categorias={categorias}
-                      cargandoCategorias={cargandoCategorias}
-                      cargandoJuegos={cargando}
-                    />
-                  }
-                />
-              </Route>
-            </Routes>
-            <ToastContainer
-              position="top-right"
-              autoClose={3000}
-              hideProgressBar={false}
-              newestOnTop={false}
-              closeOnClick
-              rtl={false}
-              pauseOnFocusLoss
-              draggable
-              pauseOnHover
-              theme="light"
-            />
-          </main>
-
-          <Footer />
-        </div>
-      </BrowserRouter>
-    </ThemeProvider>
+        <Footer />
+      </div>
+    </BrowserRouter>
   );
 }
 
