@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 
 function Carrito({ carrito, setCarrito }) {
   const navigate = useNavigate();
-  const { colores } = useTheme();
+  const { colores, modo } = useTheme();
   const [comprando, setComprando] = useState(false);
 
   const obtenerPrecio = (juego) => {
@@ -229,7 +229,7 @@ function Carrito({ carrito, setCarrito }) {
                     <Button
                       style={{
                         backgroundColor: colores.secondary,
-                        color: colores.textMain,
+                        color: modo === "oscuro" ? "#0B0D14" : "#FFFFFF",
                         border: `1px solid ${colores.border}`,
                         borderRadius: "8px",
                         fontWeight: "600",
@@ -277,7 +277,7 @@ function Carrito({ carrito, setCarrito }) {
               <Button
                 style={{
                   backgroundColor: colores.primary,
-                  color: colores.textMain,
+                  color: modo === "oscuro" ? "#0B0D14" : "#FFFFFF",
                   border: `1px solid ${colores.border}`,
                   borderRadius: "8px",
                   fontWeight: "600",
@@ -291,7 +291,7 @@ function Carrito({ carrito, setCarrito }) {
               <Button
                 style={{
                   backgroundColor: colores.secondary,
-                  color: colores.textMain,
+                  color: modo === "oscuro" ? "#0B0D14" : "#FFFFFF",
                   border: `1px solid ${colores.border}`,
                   borderRadius: "8px",
                   fontWeight: "600",
@@ -333,10 +333,26 @@ function Carrito({ carrito, setCarrito }) {
                 borderColor: colores.border,
               }}
             >
-              <Button variant="secondary" onClick={() => setShowModal(false)}>
+              <Button
+                style={{
+                  backgroundColor: colores.primary,
+                  color: modo === "oscuro" ? "#0B0D14" : "#FFFFFF",
+                  border: `1px solid ${colores.border}`,
+                  borderRadius: "8px",
+                }}
+                onClick={() => setShowModal(false)}
+              >
                 Cancelar
               </Button>
-              <Button variant="danger" onClick={confirmarBorrarTodo}>
+              <Button
+                style={{
+                  backgroundColor: colores.secondary,
+                  color: modo === "oscuro" ? "#0B0D14" : "#FFFFFF",
+                  border: `1px solid ${colores.border}`,
+                  borderRadius: "8px",
+                }}
+                onClick={confirmarBorrarTodo}
+              >
                 Sí, borrar todo
               </Button>
             </Modal.Footer>

@@ -42,3 +42,19 @@ button {
 img {
   max-width: 100%;
 }
+
+.tabla-tema {
+  --bs-table-bg: var(--color-card);
+  --bs-table-color: var(--color-text);
+  --bs-table-border-color: var(--color-border);
+  --bs-table-striped-bg: var(--color-surface);
+  --bs-table-striped-color: var(--color-text);
+  --bs-table-hover-bg: var(--color-surface);
+  --bs-table-hover-color: var(--color-text);
+}
+
+.tabla-tema th,
+.tabla-tema td {
+  color: var(--color-text);
+  vertical-align: middle;
+}

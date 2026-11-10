@@ -8,6 +8,7 @@ import logo from "../assets/img/Logo_flix_limpio.png";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
 import { useState } from "react";
+import { Sun, Moon } from "lucide-react";
 
 function BarraNav({ setBusqueda }) {
   const [textoInput, setTextoInput] = useState("");
@@ -91,7 +92,13 @@ function BarraNav({ setBusqueda }) {
             )}
 
             {esAdmin && (
-              <Nav.Link onClick={() => navigate("/NuevaCategoria")}>
+              <Nav.Link
+                onClick={() => navigate("/NuevaCategoria")}
+                style={{
+                  color: colores.textMain,
+                  cursor: "pointer",
+                }}
+              >
                 Agregar categoría
               </Nav.Link>
             )}
@@ -144,8 +151,20 @@ function BarraNav({ setBusqueda }) {
               Buscar
             </Button>
 
-            <Button onClick={cambiarTema} variant="outline-info">
-              {modo === "oscuro" ? "☀️" : "🌙"}
+            <Button
+              onClick={cambiarTema}
+              style={{
+                backgroundColor: colores.surface,
+                color: colores.textMain,
+                border: `1px solid ${colores.border}`,
+                borderRadius: "8px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: "8px 12px",
+              }}
+            >
+              {modo === "oscuro" ? <Sun size={20} /> : <Moon size={20} />}
             </Button>
           </Form>
         </Navbar.Collapse>

@@ -15,7 +15,7 @@ import {
 
 function Perfil() {
   const navigate = useNavigate();
-  const { colores } = useTheme();
+  const { colores, modo } = useTheme();
 
   const usuarioActivo = JSON.parse(
     localStorage.getItem("usuarioActivo") || "null",
@@ -296,30 +296,43 @@ function Perfil() {
       <div className="d-flex justify-content-around align-items-center mb-5">
         <div
           style={{
-            backgroundColor: "darkblue",
+            backgroundColor: colores.surface,
             height: "100px",
             width: "100px",
             borderRadius: "50%",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            color: "white",
+            color: colores.primary,
+            border: `2px solid ${colores.primary}`,
+            fontWeight: "bold",
           }}
         >
           Foto
         </div>
 
         <div>
-          <h2>{usuarioActivo.name}</h2>
-          <p>{usuarioActivo.email}</p>
+          <h2 style={{ color: colores.textMain }}>{usuarioActivo.name}</h2>
+          <p style={{ color: colores.textMuted }}>{usuarioActivo.email}</p>
         </div>
 
-        <button onClick={cerrarSesion}>Cerrar sesión</button>
+        <button
+          onClick={cerrarSesion}
+          style={{
+                  backgroundColor: colores.primary,
+                  color: modo === "oscuro" ? "#0B0D14" : "#FFFFFF",
+                  border: `1px solid ${colores.border}`,
+                  borderRadius: "8px",
+                  fontWeight: "600",
+                }}
+        >
+          Cerrar sesión
+        </button>
       </div>
 
       {usuarioActivo.roleId === 3 && (
         <div>
-          <h2>Historial de compras</h2>
+          <h2 style={{ color: colores.primary }}>Historial de compras</h2>
 
           {cargandoCompras ? (
             <p>Cargando historial de compras...</p>
@@ -329,7 +342,15 @@ function Perfil() {
             <p>Todavía no realizaste ninguna compra.</p>
           ) : (
             compras.map((compra) => (
-              <div key={compra.id} className="border rounded p-3 mb-3">
+              <div
+                key={compra.id}
+                className="rounded p-3 mb-3"
+                style={{
+                  backgroundColor: colores.card,
+                  border: `1px solid ${colores.border}`,
+                  color: colores.textMain,
+                }}
+              >
                 <h5>
                   Compra del {new Date(compra.date).toLocaleDateString("es-AR")}
                 </h5>
@@ -353,12 +374,20 @@ function Perfil() {
       {/* panel del superadm */}
       {usuarioActivo.roleId === 1 && (
         <div>
-          <div className="mb-4">
-            <h3>Crear Administrador</h3>
+          <div
+  className="mb-4 p-4 rounded"
+  style={{
+    backgroundColor: colores.card,
+    border: `1px solid ${colores.border}`,
+  }}
+>
+            <h3 style={{ color: colores.primary }}>
+  Crear Administrador
+</h3>
 
             <Form onSubmit={handlerCrearAdmin} noValidate>
               <Form.Group className="mb-3">
-                <Form.Label>Nombre</Form.Label>
+                <Form.Label style={{ color: colores.textMain }}>Nombre</Form.Label>
                 <Form.Control
                   type="text"
                   placeholder="Nombre del administrador"
@@ -372,6 +401,11 @@ function Perfil() {
                   ref={nombreAdminRef}
                   isInvalid={!!erroresAdmin.name}
                   required
+                  style={{
+  backgroundColor: colores.background,
+  color: colores.textMain,
+  border: `1px solid ${colores.border}`,
+}}
                 />
                 {erroresAdmin.name && (
                   <Form.Control.Feedback type="invalid">
@@ -381,7 +415,7 @@ function Perfil() {
               </Form.Group>
 
               <Form.Group className="mb-3">
-                <Form.Label>Email</Form.Label>
+                <Form.Label style={{ color: colores.textMain }}>Email</Form.Label>
                 <Form.Control
                   type="email"
                   placeholder="Email del administrador"
@@ -395,6 +429,11 @@ function Perfil() {
                   ref={emailAdminRef}
                   isInvalid={!!erroresAdmin.email}
                   required
+                  style={{
+  backgroundColor: colores.background,
+  color: colores.textMain,
+  border: `1px solid ${colores.border}`,
+}}
                 />
                 {erroresAdmin.email && (
                   <Form.Control.Feedback type="invalid">
@@ -404,7 +443,7 @@ function Perfil() {
               </Form.Group>
 
               <Form.Group className="mb-3">
-                <Form.Label>Contraseña</Form.Label>
+                <Form.Label style={{ color: colores.textMain }}>Contraseña</Form.Label>
                 <Form.Control
                   type="password"
                   placeholder="Contraseña"
@@ -418,6 +457,11 @@ function Perfil() {
                   ref={passwordAdminRef}
                   isInvalid={!!erroresAdmin.password}
                   required
+                  style={{
+  backgroundColor: colores.background,
+  color: colores.textMain,
+  border: `1px solid ${colores.border}`,
+}}
                 />
                 {erroresAdmin.password && (
                   <Form.Control.Feedback type="invalid">
@@ -446,7 +490,7 @@ function Perfil() {
               Gestion de Usuarios
             </h3>
 
-            <Table striped bordered hover variant="dark" responsive>
+            <Table striped bordered hover className="tabla-tema align-middle" responsive>
               <thead>
                 <tr>
                   <th>Nombre</th>
@@ -548,7 +592,7 @@ function Perfil() {
           ) : todasLasCompras.length === 0 ? (
             <p>No hay compras registradas.</p>
           ) : (
-            <Table striped bordered hover variant="dark" responsive>
+            <Table striped bordered hover className="tabla-tema align-middle" responsive>
               <thead>
                 <tr>
                   <th>ID</th>
