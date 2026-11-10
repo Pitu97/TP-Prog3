@@ -1,14 +1,65 @@
-@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap");
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
 
 * {
   box-sizing: border-box;
 }
 
 html {
-  font-family: "Noto Sans JP", sans-serif;
+  min-height: 100%;
+  scroll-behavior: smooth;
 }
 
 body {
   margin: 0;
-  background-color: #0b0d14;
+  min-height: 100vh;
+  font-family: "Inter", system-ui, sans-serif;
+  background-color: #0B0D14;
+  color: #F5F7FB;
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
+button {
+  transition: all 0.2s ease;
+}
+
+::selection {
+  background-color: #00D9F5;
+  color: #0B0D14;
+}
+
+img {
+  max-width: 100%;
+}
+
+.tabla-tema {
+  --bs-table-bg: var(--color-card);
+  --bs-table-color: var(--color-text);
+  --bs-table-border-color: var(--color-border);
+  --bs-table-striped-bg: var(--color-surface);
+  --bs-table-striped-color: var(--color-text);
+  --bs-table-hover-bg: var(--color-surface);
+  --bs-table-hover-color: var(--color-text);
+}
+
+.tabla-tema th,
+.tabla-tema td {
+  color: var(--color-text);
+  vertical-align: middle;
+}
+
+.tarjeta-videojuego:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2) !important;
 }

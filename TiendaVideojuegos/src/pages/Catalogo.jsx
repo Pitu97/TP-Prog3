@@ -115,6 +115,7 @@ function Catalogo({
                   label={plat}
                   checked={plataformas.includes(plat)}
                   onChange={() => togglePlataforma(plat)}
+                  style={{ color: colores.textMain }}
                 />
               ))}
             </div>
@@ -128,6 +129,7 @@ function Catalogo({
                   label={cat.name}
                   checked={categoriasSeleccionadas.includes(Number(cat.id))}
                   onChange={() => toggleCategoria(cat.id)}
+                  style={{ color: colores.textMain }}
                 />
               ))}
             </div>

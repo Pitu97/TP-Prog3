@@ -6,8 +6,10 @@ import {
 } from "../services/api";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
 import Form from "react-bootstrap/Form";
+import { useTheme } from "../context/ThemeContext";
 
 function Login() {
+  const { colores } = useTheme();
   const navigate = useNavigate();
 
   const emailRef = useRef(null);
@@ -172,9 +174,25 @@ function Login() {
   };
 
   return (
-    <div className="Tarjetas">
-      <div>
-        <h2>Login</h2>
+    <div
+      className="Tarjetas"
+      style={{
+        alignItems: "flex-start",
+        padding: "30px 15px",
+      }}
+    >
+      <div
+        style={{
+          backgroundColor: colores.card,
+          color: colores.textMain,
+          border: `1px solid ${colores.border}`,
+          borderRadius: "12px",
+          padding: "25px",
+          width: "100%",
+          maxWidth: "420px",
+        }}
+      >
+        <h2 style={{ color: colores.primary }}>Iniciar sesión</h2>
 
         <Form onSubmit={iniciarSesion} noValidate>
           <FloatingLabel
@@ -219,12 +237,36 @@ function Login() {
             </div>
           )}
 
-          <button type="submit">Iniciar sesión</button>
+          <button
+            type="submit"
+            style={{
+              width: "100%",
+              padding: "10px",
+              borderRadius: "8px",
+              border: "none",
+              backgroundColor: colores.primary,
+              color: colores.background,
+              fontWeight: "600",
+              cursor: "pointer",
+            }}
+          >
+            Iniciar sesión
+          </button>
         </Form>
       </div>
 
-      <div>
-        <h2>Registrarse</h2>
+      <div
+        style={{
+          backgroundColor: colores.card,
+          color: colores.textMain,
+          border: `1px solid ${colores.border}`,
+          borderRadius: "12px",
+          padding: "25px",
+          width: "100%",
+          maxWidth: "420px",
+        }}
+      >
+        <h2 style={{ color: colores.primary }}>Registrarse</h2>
 
         <Form onSubmit={registrarse} noValidate>
           <FloatingLabel
@@ -291,7 +333,21 @@ function Login() {
             </div>
           )}
 
-          <button type="submit">Registrarse</button>
+          <button
+            type="submit"
+            style={{
+              width: "100%",
+              padding: "10px",
+              borderRadius: "8px",
+              border: "none",
+              backgroundColor: colores.primary,
+              color: colores.background,
+              fontWeight: "600",
+              cursor: "pointer",
+            }}
+          >
+            Registrarse
+          </button>
         </Form>
       </div>
     </div>

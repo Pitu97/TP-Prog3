@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 
 function Carrito({ carrito, setCarrito }) {
   const navigate = useNavigate();
-  const { colores } = useTheme();
+  const { colores, modo } = useTheme();
   const [comprando, setComprando] = useState(false);
 
   const obtenerPrecio = (juego) => {
@@ -152,15 +152,26 @@ function Carrito({ carrito, setCarrito }) {
 
   return (
     <div className="container mt-4 mb-5">
-      <h2 className="mb-4">Mi carrito</h2>
+      <h2 className="mb-4" style={{ color: colores.textMain }}>
+        Mi carrito
+      </h2>
 
       {carrito.length === 0 ? (
-        <p>Tu carrito está vacío.</p>
+        <p style={{ color: colores.textMuted }}>Tu carrito está vacío.</p>
       ) : (
         <div className="d-flex flex-wrap gap-4">
           <div className="flex-grow-1">
             {carrito.map((juego) => (
-              <Card key={juego.id} className="mb-3">
+              <Card
+                key={juego.id}
+                className="mb-3"
+                style={{
+                  backgroundColor: colores.card,
+                  color: colores.textMain,
+                  border: `1px solid ${colores.border}`,
+                  borderRadius: "12px",
+                }}
+              >
                 <div className="d-flex align-items-center p-3 gap-3">
                   <Card.Img
                     src={juego.image}
@@ -173,9 +184,11 @@ function Carrito({ carrito, setCarrito }) {
                   />
 
                   <div className="flex-grow-1">
-                    <Card.Title>{juego.name}</Card.Title>
+                    <Card.Title style={{ color: colores.textMain }}>
+                      {juego.name}
+                    </Card.Title>
 
-                    <p>
+                    <p style={{ color: colores.textMuted }}>
                       Precio unitario:{" "}
                       {obtenerPrecio(juego) !== null
                         ? `$${obtenerPrecio(juego).toFixed(2)}`
@@ -184,7 +197,13 @@ function Carrito({ carrito, setCarrito }) {
 
                     <div className="d-flex align-items-center gap-2">
                       <Button
-                        variant="secondary"
+                        style={{
+                          backgroundColor: colores.surface,
+                          color: colores.textMain,
+                          border: `1px solid ${colores.border}`,
+                          borderRadius: "8px",
+                          fontWeight: "bold",
+                        }}
                         onClick={() => disminuirCantidad(juego.id)}
                         disabled={comprando}
                       >
@@ -194,7 +213,13 @@ function Carrito({ carrito, setCarrito }) {
                       <span>{juego.cantidad || 1}</span>
 
                       <Button
-                        variant="secondary"
+                        style={{
+                          backgroundColor: colores.surface,
+                          color: colores.textMain,
+                          border: `1px solid ${colores.border}`,
+                          borderRadius: "8px",
+                          fontWeight: "bold",
+                        }}
                         onClick={() => aumentarCantidad(juego.id)}
                         disabled={comprando}
                       >
@@ -202,7 +227,13 @@ function Carrito({ carrito, setCarrito }) {
                       </Button>
                     </div>
                     <Button
-                      variant="danger"
+                      style={{
+                        backgroundColor: colores.secondary,
+                        color: modo === "oscuro" ? "#0B0D14" : "#FFFFFF",
+                        border: `1px solid ${colores.border}`,
+                        borderRadius: "8px",
+                        fontWeight: "600",
+                      }}
                       size="sm"
                       className="mt-2"
                       onClick={() => eliminarProducto(juego.id)}
@@ -212,7 +243,7 @@ function Carrito({ carrito, setCarrito }) {
                     </Button>
                   </div>
 
-                  <strong>
+                  <strong style={{ color: colores.primary }}>
                     {obtenerPrecio(juego) !== null
                       ? `$${(obtenerPrecio(juego) * (juego.cantidad || 1)).toFixed(2)}`
                       : "Precio no disponible"}
@@ -223,18 +254,48 @@ function Carrito({ carrito, setCarrito }) {
           </div>
 
           <div style={{ minWidth: "220px" }}>
-            <Card className="p-3">
-              <Card.Title>Resumen de compra</Card.Title>
+            <Card
+              className="p-3"
+              style={{
+                backgroundColor: colores.card,
+                color: colores.textMain,
+                border: `1px solid ${colores.border}`,
+                borderRadius: "12px",
+              }}
+            >
+              <Card.Title style={{ color: colores.textMain }}>
+                Resumen de compra
+              </Card.Title>
 
-              <Card.Text>
-                Total: <strong>${total.toFixed(2)}</strong>
+              <Card.Text style={{ color: colores.textMuted }}>
+                Total:{" "}
+                <strong style={{ color: colores.primary }}>
+                  ${total.toFixed(2)}
+                </strong>
               </Card.Text>
 
-              <Button variant="success" onClick={comprar} disabled={comprando || !carritoValido}>
+              <Button
+                style={{
+                  backgroundColor: colores.primary,
+                  color: modo === "oscuro" ? "#0B0D14" : "#FFFFFF",
+                  border: `1px solid ${colores.border}`,
+                  borderRadius: "8px",
+                  fontWeight: "600",
+                  padding: "10px",
+                }}
+                onClick={comprar}
+                disabled={comprando || !carritoValido}
+              >
                 {comprando ? "Procesando..." : "Confirmar compra"}
               </Button>
               <Button
-                variant="danger"
+                style={{
+                  backgroundColor: colores.secondary,
+                  color: modo === "oscuro" ? "#0B0D14" : "#FFFFFF",
+                  border: `1px solid ${colores.border}`,
+                  borderRadius: "8px",
+                  fontWeight: "600",
+                }}
                 onClick={limpiarCarrito}
                 disabled={comprando}
               >
@@ -243,18 +304,55 @@ function Carrito({ carrito, setCarrito }) {
             </Card>
           </div>
           <Modal show={showModal} onHide={() => setShowModal(false)}>
-            <Modal.Header closeButton>
-              <Modal.Title>Vaciar carrito</Modal.Title>
+            <Modal.Header
+              closeButton
+              style={{
+                backgroundColor: colores.card,
+                color: colores.textMain,
+                borderColor: colores.border,
+              }}
+            >
+              <Modal.Title style={{ color: colores.textMain }}>
+                Vaciar carrito
+              </Modal.Title>
             </Modal.Header>
-            <Modal.Body>
+
+            <Modal.Body
+              style={{
+                backgroundColor: colores.card,
+                color: colores.textMuted,
+              }}
+            >
               ¿Estás seguro de que quieres eliminar todos los productos del
               carrito?
             </Modal.Body>
-            <Modal.Footer>
-              <Button variant="secondary" onClick={() => setShowModal(false)}>
+
+            <Modal.Footer
+              style={{
+                backgroundColor: colores.card,
+                borderColor: colores.border,
+              }}
+            >
+              <Button
+                style={{
+                  backgroundColor: colores.primary,
+                  color: modo === "oscuro" ? "#0B0D14" : "#FFFFFF",
+                  border: `1px solid ${colores.border}`,
+                  borderRadius: "8px",
+                }}
+                onClick={() => setShowModal(false)}
+              >
                 Cancelar
               </Button>
-              <Button variant="danger" onClick={confirmarBorrarTodo}>
+              <Button
+                style={{
+                  backgroundColor: colores.secondary,
+                  color: modo === "oscuro" ? "#0B0D14" : "#FFFFFF",
+                  border: `1px solid ${colores.border}`,
+                  borderRadius: "8px",
+                }}
+                onClick={confirmarBorrarTodo}
+              >
                 Sí, borrar todo
               </Button>
             </Modal.Footer>

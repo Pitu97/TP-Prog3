@@ -1,22 +1,29 @@
+
 import { createContext, useContext, useState } from "react";
 
 const ThemeContext = createContext();
 
 const temas = {
   claro: {
-    background: "#FEE9E1",
+    background: "#F4F6FB",
     card: "#FFFFFF",
-    primary: "#222725",
-    textMain: "#222725",
-    secondary: "#06D6A0",
+    surface: "#EEF1F7",
+    primary: "#2563EB",
+    secondary: "#7C3AED",
+    textMain: "#172033",
+    textMuted: "#667085",
+    border: "#DCE2EC",
   },
 
   oscuro: {
-    background: "#222725",
-    card: "#343A38",
-    primary: "#5BC3EB",
-    textMain: "#FFFFFF",
-    secondary: "#06D6A0",
+    background: "#0B0D14",
+    card: "#151A27",
+    surface: "#1D2433",
+    primary: "#00D9F5",
+    secondary: "#9333EA",
+    textMain: "#F5F7FB",
+    textMuted: "#9AA4B2",
+    border: "#2B3445",
   },
 };
 

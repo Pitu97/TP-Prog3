@@ -1,15 +1,17 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "react-bootstrap";
 import Tarjeta from "../components/Tarjeta";
+import { useTheme } from "../context/ThemeContext";
 
 function DetalleJuego({ juegos, categorias, agregarAlCarrito }) {
+  const { colores } = useTheme();
   const { id } = useParams();
   const navigate = useNavigate();
 
   const juego = juegos.find((juego) => juego.id.toString() === id);
 
   const categoria = categorias.find(
-    (categoria) => Number(categoria.id) === Number(juego?.categoryId)
+    (categoria) => Number(categoria.id) === Number(juego?.categoryId),
   );
 
   if (!juego) {
@@ -26,7 +28,8 @@ function DetalleJuego({ juegos, categorias, agregarAlCarrito }) {
   const juegosRelacionados = juegos
     .filter(
       (otroJuego) =>
-        otroJuego.id !== juego.id && Number(otroJuego.categoryId) === Number(juego.categoryId)
+        otroJuego.id !== juego.id &&
+        Number(otroJuego.categoryId) === Number(juego.categoryId),
     )
     .slice(0, 4);
 
@@ -44,7 +47,12 @@ function DetalleJuego({ juegos, categorias, agregarAlCarrito }) {
 
       <div
         className="d-flex flex-wrap justify-content-around align-items-center gap-4 p-4 rounded"
-        style={{ backgroundColor: "darkblue", color: "white" }}
+        style={{
+          backgroundColor: colores.card,
+          color: colores.textMain,
+          border: `1px solid ${colores.border}`,
+          borderRadius: "12px",
+        }}
       >
         <img
           src={juego.image}
@@ -59,28 +67,25 @@ function DetalleJuego({ juegos, categorias, agregarAlCarrito }) {
         />
 
         <div>
-          <h3>Precio: ${Number(juego.price).toFixed(2)}</h3>
-          <p>Plataforma: {juego.platform || "No especificada"}</p>
-          <p>Categoria: {categoria?.name || "Sin categoria"}</p>
+          <h3 style={{ color: colores.primary }}>Precio: ${Number(juego.price).toFixed(2)}</h3>
+          <p style={{ color: colores.textMuted }}>Plataforma: {juego.platform || "No especificada"}</p>
+          <p style={{ color: colores.textMuted }}>Categoria: {categoria?.name || "Sin categoria"}</p>
 
-          <Button
-            variant="success"
-            onClick={() => agregarAlCarrito(juego)}
-          >
+          <Button variant="success" onClick={() => agregarAlCarrito(juego)}>
             Agregar al carrito
           </Button>
         </div>
       </div>
 
       <section className="mt-4">
-        <h3>Descripción</h3>
+        <h3 style={{ color: colores.textMain }}>Descripción</h3>
         <p>
           {juego.description || "Todavía no hay una descripción disponible."}
         </p>
       </section>
 
       <section className="mt-5">
-        <h3>Juegos relacionados</h3>
+        <h3 style={{ color: colores.textMain }}>Juegos relacionados</h3>
 
         {juegosRelacionados.length === 0 ? (
           <p>No hay otros juegos del mismo género.</p>

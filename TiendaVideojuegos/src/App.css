@@ -1,6 +1,67 @@
+
+/* Distribución general de tarjetas */
+
 .Tarjetas {
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
+  align-items: stretch;
+  flex-wrap: wrap;
+  gap: 20px;
   padding: 10px;
-  align-items: center;
+}
+
+/* Botones */
+
+.btn {
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+}
+
+/* Campos de formularios */
+
+.form-control,
+.form-select {
+  border-radius: 8px;
+  border-color: var(--color-border);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 0.2rem
+    color-mix(in srgb, var(--color-primary) 20%, transparent);
+}
+
+/* Títulos */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 700;
+  letter-spacing: -0.3px;
+}
+
+/* Enlaces */
+
+a {
+  transition: color 0.2s ease;
+}
+
+/* Responsive */
+
+@media (max-width: 768px) {
+  .Tarjetas {
+    gap: 15px;
+    padding: 5px;
+  }
 }
