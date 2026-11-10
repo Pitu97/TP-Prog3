@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
 
 function NuevoJuego({ agregarJuego, categorias, cargandoCategorias }) {
@@ -14,6 +14,22 @@ function NuevoJuego({ agregarJuego, categorias, cargandoCategorias }) {
     image: "",
   });
 
+  const nombreRef = useRef(null);
+  const descripcionRef = useRef(null);
+  const precioRef = useRef(null);
+  const plataformaRef = useRef(null);
+  const categoriaRef = useRef(null);
+  const imagenRef = useRef(null);
+
+  const [errores, setErrores] = useState({
+    name: "",
+    description: "",
+    price: "",
+    platform: "",
+    categoryId: "",
+    image: "",
+  });
+
   const handleChange = (e) => {
     setJuego({
       ...juego,
@@ -21,11 +37,87 @@ function NuevoJuego({ agregarJuego, categorias, cargandoCategorias }) {
     });
   };
 
+  const validarJuego = () => {
+    const nuevosErrores = {
+      name: "",
+      description: "",
+      price: "",
+      platform: "",
+      categoryId: "",
+      image: "",
+    };
+
+    if (!juego.name.trim()) {
+      nuevosErrores.name = "El nombre del juego es obligatorio.";
+    }
+
+    if (!juego.description.trim()) {
+      nuevosErrores.description = "La descripción es obligatoria.";
+    }
+
+    if (!juego.price.trim()) {
+      nuevosErrores.price = "El precio es obligatorio.";
+    } else if (
+      !Number.isFinite(Number(juego.price)) ||
+      Number(juego.price) <= 0
+    ) {
+      nuevosErrores.price = "El precio debe ser mayor que cero.";
+    }
+
+    if (!["PC", "PS5", "Xbox", "Switch"].includes(juego.platform)) {
+      nuevosErrores.platform = "Seleccioná una plataforma.";
+    }
+
+    if (
+      !juego.categoryId ||
+      !categorias.some((cat) => Number(cat.id) === Number(juego.categoryId))
+    ) {
+      nuevosErrores.categoryId = "Seleccioná un género válido.";
+    }
+
+    if (!juego.image.trim()) {
+      nuevosErrores.image = "La URL de la imagen es obligatoria.";
+    } else {
+      try {
+        const url = new URL(juego.image);
+
+        if (!["http:", "https:"].includes(url.protocol)) {
+          nuevosErrores.image = "Ingresá una URL válida.";
+        }
+      } catch {
+        nuevosErrores.image = "Ingresá una URL válida.";
+      }
+    }
+
+    setErrores(nuevosErrores);
+
+    if (nuevosErrores.name) {
+      nombreRef.current.focus();
+    } else if (nuevosErrores.description) {
+      descripcionRef.current.focus();
+    } else if (nuevosErrores.price) {
+      precioRef.current.focus();
+    } else if (nuevosErrores.platform) {
+      plataformaRef.current.focus();
+    } else if (nuevosErrores.categoryId) {
+      categoriaRef.current.focus();
+    } else if (nuevosErrores.image) {
+      imagenRef.current.focus();
+    }
+
+    return !Object.values(nuevosErrores).some((mensaje) => mensaje !== "");
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    setGuardando(true);
     setError("");
+
+    if (!validarJuego()) {
+      return;
+    }
+
+    setGuardando(true);
 
     const nuevoJuego = {
       ...juego,
@@ -60,7 +152,7 @@ function NuevoJuego({ agregarJuego, categorias, cargandoCategorias }) {
         <Col md={8} lg={6}>
           <h2 className="mb-4 text-center">Agregar nuevo juego</h2>
 
-          <Form onSubmit={handleSubmit}>
+          <Form onSubmit={handleSubmit} noValidate>
             <Form.Group className="mb-3">
               <Form.Label>Nombre del juego</Form.Label>
               <Form.Control
@@ -68,8 +160,15 @@ function NuevoJuego({ agregarJuego, categorias, cargandoCategorias }) {
                 name="name"
                 value={juego.name}
                 onChange={handleChange}
+                ref={nombreRef}
+                isInvalid={!!errores.name}
                 required
               />
+              {errores.name && (
+                <Form.Control.Feedback type="invalid">
+                  {errores.name}
+                </Form.Control.Feedback>
+              )}
             </Form.Group>
 
             <Form.Group className="mb-3">
@@ -80,8 +179,15 @@ function NuevoJuego({ agregarJuego, categorias, cargandoCategorias }) {
                 name="description"
                 value={juego.description}
                 onChange={handleChange}
+                ref={descripcionRef}
+                isInvalid={!!errores.description}
                 required
               />
+              {errores.description && (
+                <Form.Control.Feedback type="invalid">
+                  {errores.description}
+                </Form.Control.Feedback>
+              )}
             </Form.Group>
 
             <Form.Group className="mb-3">
@@ -93,8 +199,15 @@ function NuevoJuego({ agregarJuego, categorias, cargandoCategorias }) {
                 onChange={handleChange}
                 min="0"
                 step="0.01"
+                ref={precioRef}
+                isInvalid={!!errores.price}
                 required
               />
+              {errores.price && (
+                <Form.Control.Feedback type="invalid">
+                  {errores.price}
+                </Form.Control.Feedback>
+              )}
             </Form.Group>
 
             <Form.Group className="mb-3">
@@ -103,6 +216,8 @@ function NuevoJuego({ agregarJuego, categorias, cargandoCategorias }) {
                 name="platform"
                 value={juego.platform}
                 onChange={handleChange}
+                ref={plataformaRef}
+                isInvalid={!!errores.platform}
                 required
               >
                 <option value="">Seleccionar plataforma</option>
@@ -111,6 +226,11 @@ function NuevoJuego({ agregarJuego, categorias, cargandoCategorias }) {
                 <option value="Xbox">Xbox</option>
                 <option value="Switch">Switch</option>
               </Form.Select>
+              {errores.platform && (
+                <Form.Control.Feedback type="invalid">
+                  {errores.platform}
+                </Form.Control.Feedback>
+              )}
             </Form.Group>
 
             <Form.Group className="mb-3">
@@ -119,6 +239,8 @@ function NuevoJuego({ agregarJuego, categorias, cargandoCategorias }) {
                 name="categoryId"
                 value={juego.categoryId}
                 onChange={handleChange}
+                ref={categoriaRef}
+                isInvalid={!!errores.categoryId}
                 required
               >
                 <option value="">
@@ -133,6 +255,11 @@ function NuevoJuego({ agregarJuego, categorias, cargandoCategorias }) {
                   </option>
                 ))}
               </Form.Select>
+              {errores.categoryId && (
+                <Form.Control.Feedback type="invalid">
+                  {errores.categoryId}
+                </Form.Control.Feedback>
+              )}
             </Form.Group>
 
             <Form.Group className="mb-4">
@@ -143,8 +270,15 @@ function NuevoJuego({ agregarJuego, categorias, cargandoCategorias }) {
                 value={juego.image}
                 onChange={handleChange}
                 placeholder="https://ejemplo.com/imagen.jpg"
+                ref={imagenRef}
+                isInvalid={!!errores.image}
                 required
               />
+              {errores.image && (
+                <Form.Control.Feedback type="invalid">
+                  {errores.image}
+                </Form.Control.Feedback>
+              )}
             </Form.Group>
 
             {error && <p className="text-danger mb-3">{error}</p>}
