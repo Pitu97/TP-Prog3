@@ -10,7 +10,7 @@ import { useTheme } from "../context/ThemeContext";
 import { useState } from "react";
 import { Sun, Moon } from "lucide-react";
 
-function BarraNav({ setBusqueda }) {
+function BarraNav({ setBusqueda, onSolicitarLogin }) {
   const [textoInput, setTextoInput] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
@@ -73,7 +73,19 @@ function BarraNav({ setBusqueda }) {
             </Nav.Link>
 
             <Nav.Link
-              onClick={() => navigate("/carrito")}
+              onClick={() => {
+                const token = localStorage.getItem("token");
+                const usuarioActivo = JSON.parse(
+                  localStorage.getItem("usuarioActivo") || "null",
+                );
+
+                if (!token || !usuarioActivo) {
+                  onSolicitarLogin();
+                  return;
+                }
+
+                navigate("/carrito");
+              }}
               style={{ color: colores.textMain, cursor: "pointer" }}
             >
               Carrito
@@ -108,7 +120,7 @@ function BarraNav({ setBusqueda }) {
                 onClick={() => navigate("/perfil")}
                 style={{ color: colores.textMain, cursor: "pointer" }}
               >
-                {usuarioActivo.name} ({rol})
+                {usuarioActivo.name}
               </Nav.Link>
             ) : (
               <Nav.Link

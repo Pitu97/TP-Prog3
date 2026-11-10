@@ -21,6 +21,7 @@ import BarraNav from "./components/BarraNav";
 import Footer from "./components/Footer";
 import NuevoJuego from "./components/NuevoJuego";
 import NuevaCategoria from "./components/NuevaCategoria";
+import LoginRequeridoModal from "./components/LoginRequeridoModal";
 import { ToastContainer } from "react-toastify";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -40,6 +41,8 @@ function App() {
   });
 
   const [busqueda, setBusqueda] = useState("");
+
+  const [mostrarLoginModal, setMostrarLoginModal] = useState(false);
 
   useEffect(() => {
     const cargarJuegos = async () => {
@@ -102,6 +105,16 @@ function App() {
   };
 
   const agregarAlCarrito = (juego) => {
+    const token = localStorage.getItem("token");
+    const usuarioActivo = JSON.parse(
+      localStorage.getItem("usuarioActivo") || "null",
+    );
+
+    if (!token || !usuarioActivo) {
+      setMostrarLoginModal(true);
+      return;
+    }
+
     const existe = carrito.some((juegoCarrito) => juegoCarrito.id === juego.id);
 
     if (existe) {
@@ -154,8 +167,11 @@ function App() {
           color: colores.textMain,
         }}
       >
-        <BarraNav setBusqueda={setBusqueda} />
-
+        <BarraNav setBusqueda={setBusqueda} onSolicitarLogin={() => setMostrarLoginModal(true)} />
+        <LoginRequeridoModal
+          show={mostrarLoginModal}
+          onHide={() => setMostrarLoginModal(false)}
+        />
         <main className="flex-grow-1">
           {cargando && <p>Cargando videojuegos...</p>}
 
