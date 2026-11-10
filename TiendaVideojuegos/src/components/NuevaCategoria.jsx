@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Form,
@@ -25,33 +25,58 @@ function NuevaCategoria({ categorias, setCategorias, cargandoCategorias }) {
   const [mensaje, setMensaje] = useState("");
   const [guardando, setGuardando] = useState(false);
 
+  const nombreRef = useRef(null);
+
+  const [errores, setErrores] = useState({
+    nombre: "",
+  });
+
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const validarCategoria = () => {
+    const nuevosErrores = {
+      nombre: "",
+    };
 
     const nombreLimpio = nombre.trim();
 
     if (!nombreLimpio) {
-      setError("Ingresá un nombre para la categoría.");
+      nuevosErrores.nombre = "El nombre de la categoría es obligatorio.";
+    } else if (nombreLimpio.length < 3) {
+      nuevosErrores.nombre = "El nombre debe tener al menos 3 caracteres.";
+    } else if (
+      categorias.some(
+        (cat) =>
+          cat.name.toLowerCase() === nombreLimpio.toLowerCase() &&
+          Number(cat.id) !== Number(idEditando),
+      )
+    ) {
+      nuevosErrores.nombre = "Ya existe una categoría con ese nombre.";
+    }
+
+    setErrores(nuevosErrores);
+
+    if (nuevosErrores.nombre) {
+      nombreRef.current.focus();
+    }
+
+    return !nuevosErrores.nombre;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    setError("");
+    setMensaje("");
+
+    if (!validarCategoria()) {
       return;
     }
 
-    const yaExiste = categorias.some(
-      (cat) =>
-        cat.name.toLowerCase() === nombreLimpio.toLowerCase() &&
-        cat.id !== idEditando,
-    );
-
-    if (yaExiste) {
-      setError("Ya existe una categoría con ese nombre.");
-      return;
-    }
+    const nombreLimpio = nombre.trim();
 
     try {
       setGuardando(true);
-      setError("");
-      setMensaje("");
 
       if (idEditando !== null) {
         const categoriaActualizada = await actualizarCategoria(
@@ -144,7 +169,7 @@ function NuevaCategoria({ categorias, setCategorias, cargandoCategorias }) {
             {idEditando !== null ? "Editar categoría" : "Crear nueva categoría"}
           </h5>
 
-          <Form onSubmit={handleSubmit}>
+          <Form onSubmit={handleSubmit} noValidate>
             <Form.Group className="mb-3">
               <Form.Label>Nombre de la categoría</Form.Label>
 
@@ -153,8 +178,15 @@ function NuevaCategoria({ categorias, setCategorias, cargandoCategorias }) {
                 placeholder="Ejemplo: Aventura"
                 value={nombre}
                 onChange={(e) => setNombre(e.target.value)}
+                ref={nombreRef}
+                isInvalid={!!errores.nombre}
                 required
               />
+              {errores.nombre && (
+                <Form.Control.Feedback type="invalid">
+                  {errores.nombre}
+                </Form.Control.Feedback>
+              )}
             </Form.Group>
 
             <div className="d-flex gap-2">
