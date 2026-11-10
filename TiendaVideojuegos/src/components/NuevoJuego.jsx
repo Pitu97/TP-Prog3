@@ -1,7 +1,9 @@
 import { useState, useRef } from "react";
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
+import { useTheme } from "../context/ThemeContext";
 
 function NuevoJuego({ agregarJuego, categorias, cargandoCategorias }) {
+  const { colores } = useTheme();
   const [guardando, setGuardando] = useState(false);
   const [error, setError] = useState("");
 
@@ -150,149 +152,210 @@ function NuevoJuego({ agregarJuego, categorias, cargandoCategorias }) {
     <Container className="mt-4 mb-5">
       <Row className="justify-content-center">
         <Col md={8} lg={6}>
-          <h2 className="mb-4 text-center">Agregar nuevo juego</h2>
+          <div
+            style={{
+              backgroundColor: colores.card,
+              border: `1px solid ${colores.border}`,
+              borderRadius: "12px",
+              padding: "25px",
+              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.10)",
+            }}
+          >
+            <h2 className="mb-4 text-center" style={{ color: colores.primary }}>
+              Agregar nuevo juego
+            </h2>
 
-          <Form onSubmit={handleSubmit} noValidate>
-            <Form.Group className="mb-3">
-              <Form.Label>Nombre del juego</Form.Label>
-              <Form.Control
-                type="text"
-                name="name"
-                value={juego.name}
-                onChange={handleChange}
-                ref={nombreRef}
-                isInvalid={!!errores.name}
-                required
-              />
-              {errores.name && (
-                <Form.Control.Feedback type="invalid">
-                  {errores.name}
-                </Form.Control.Feedback>
-              )}
-            </Form.Group>
+            <Form onSubmit={handleSubmit} noValidate>
+              <Form.Group className="mb-3">
+                <Form.Label style={{ color: colores.textMain }}>
+                  Nombre del juego
+                </Form.Label>
+                <Form.Control
+                  type="text"
+                  name="name"
+                  value={juego.name}
+                  onChange={handleChange}
+                  ref={nombreRef}
+                  isInvalid={!!errores.name}
+                  required
+                  style={{
+                    backgroundColor: colores.background,
+                    color: colores.textMain,
+                    border: `1px solid ${colores.border}`,
+                  }}
+                />
+                {errores.name && (
+                  <Form.Control.Feedback type="invalid">
+                    {errores.name}
+                  </Form.Control.Feedback>
+                )}
+              </Form.Group>
 
-            <Form.Group className="mb-3">
-              <Form.Label>Descripción</Form.Label>
-              <Form.Control
-                as="textarea"
-                rows={3}
-                name="description"
-                value={juego.description}
-                onChange={handleChange}
-                ref={descripcionRef}
-                isInvalid={!!errores.description}
-                required
-              />
-              {errores.description && (
-                <Form.Control.Feedback type="invalid">
-                  {errores.description}
-                </Form.Control.Feedback>
-              )}
-            </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label style={{ color: colores.textMain }}>
+                  Descripción
+                </Form.Label>
+                <Form.Control
+                  as="textarea"
+                  rows={3}
+                  name="description"
+                  value={juego.description}
+                  onChange={handleChange}
+                  ref={descripcionRef}
+                  isInvalid={!!errores.description}
+                  required
+                  style={{
+                    backgroundColor: colores.background,
+                    color: colores.textMain,
+                    border: `1px solid ${colores.border}`,
+                  }}
+                />
+                {errores.description && (
+                  <Form.Control.Feedback type="invalid">
+                    {errores.description}
+                  </Form.Control.Feedback>
+                )}
+              </Form.Group>
 
-            <Form.Group className="mb-3">
-              <Form.Label>Precio</Form.Label>
-              <Form.Control
-                type="number"
-                name="price"
-                value={juego.price}
-                onChange={handleChange}
-                min="0"
-                step="0.01"
-                ref={precioRef}
-                isInvalid={!!errores.price}
-                required
-              />
-              {errores.price && (
-                <Form.Control.Feedback type="invalid">
-                  {errores.price}
-                </Form.Control.Feedback>
-              )}
-            </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label style={{ color: colores.textMain }}>
+                  Precio
+                </Form.Label>
+                <Form.Control
+                  type="number"
+                  name="price"
+                  value={juego.price}
+                  onChange={handleChange}
+                  min="0"
+                  step="0.01"
+                  ref={precioRef}
+                  isInvalid={!!errores.price}
+                  required
+                  style={{
+                    backgroundColor: colores.background,
+                    color: colores.textMain,
+                    border: `1px solid ${colores.border}`,
+                  }}
+                />
+                {errores.price && (
+                  <Form.Control.Feedback type="invalid">
+                    {errores.price}
+                  </Form.Control.Feedback>
+                )}
+              </Form.Group>
 
-            <Form.Group className="mb-3">
-              <Form.Label>Plataforma</Form.Label>
-              <Form.Select
-                name="platform"
-                value={juego.platform}
-                onChange={handleChange}
-                ref={plataformaRef}
-                isInvalid={!!errores.platform}
-                required
-              >
-                <option value="">Seleccionar plataforma</option>
-                <option value="PC">PC</option>
-                <option value="PS5">PS5</option>
-                <option value="Xbox">Xbox</option>
-                <option value="Switch">Switch</option>
-              </Form.Select>
-              {errores.platform && (
-                <Form.Control.Feedback type="invalid">
-                  {errores.platform}
-                </Form.Control.Feedback>
-              )}
-            </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label style={{ color: colores.textMain }}>
+                  Plataforma
+                </Form.Label>
+                <Form.Select
+                  name="platform"
+                  value={juego.platform}
+                  onChange={handleChange}
+                  ref={plataformaRef}
+                  isInvalid={!!errores.platform}
+                  required
+                  style={{
+                    backgroundColor: colores.background,
+                    color: colores.textMain,
+                    border: `1px solid ${colores.border}`,
+                  }}
+                >
+                  <option value="">Seleccionar plataforma</option>
+                  <option value="PC">PC</option>
+                  <option value="PS5">PS5</option>
+                  <option value="Xbox">Xbox</option>
+                  <option value="Switch">Switch</option>
+                </Form.Select>
+                {errores.platform && (
+                  <Form.Control.Feedback type="invalid">
+                    {errores.platform}
+                  </Form.Control.Feedback>
+                )}
+              </Form.Group>
 
-            <Form.Group className="mb-3">
-              <Form.Label>Género</Form.Label>
-              <Form.Select
-                name="categoryId"
-                value={juego.categoryId}
-                onChange={handleChange}
-                ref={categoriaRef}
-                isInvalid={!!errores.categoryId}
-                required
-              >
-                <option value="">
-                  {cargandoCategorias
-                    ? "Cargando categorías..."
-                    : "Seleccionar género"}
-                </option>
-
-                {categorias.map((cat) => (
-                  <option key={cat.id} value={cat.id}>
-                    {cat.name}
+              <Form.Group className="mb-3">
+                <Form.Label style={{ color: colores.textMain }}>
+                  Género
+                </Form.Label>
+                <Form.Select
+                  name="categoryId"
+                  value={juego.categoryId}
+                  onChange={handleChange}
+                  ref={categoriaRef}
+                  isInvalid={!!errores.categoryId}
+                  required
+                  style={{
+                    backgroundColor: colores.background,
+                    color: colores.textMain,
+                    border: `1px solid ${colores.border}`,
+                  }}
+                >
+                  <option value="">
+                    {cargandoCategorias
+                      ? "Cargando categorías..."
+                      : "Seleccionar género"}
                   </option>
-                ))}
-              </Form.Select>
-              {errores.categoryId && (
-                <Form.Control.Feedback type="invalid">
-                  {errores.categoryId}
-                </Form.Control.Feedback>
-              )}
-            </Form.Group>
 
-            <Form.Group className="mb-4">
-              <Form.Label>URL de la imagen</Form.Label>
-              <Form.Control
-                type="url"
-                name="image"
-                value={juego.image}
-                onChange={handleChange}
-                placeholder="https://ejemplo.com/imagen.jpg"
-                ref={imagenRef}
-                isInvalid={!!errores.image}
-                required
-              />
-              {errores.image && (
-                <Form.Control.Feedback type="invalid">
-                  {errores.image}
-                </Form.Control.Feedback>
-              )}
-            </Form.Group>
+                  {categorias.map((cat) => (
+                    <option key={cat.id} value={cat.id}>
+                      {cat.name}
+                    </option>
+                  ))}
+                </Form.Select>
+                {errores.categoryId && (
+                  <Form.Control.Feedback type="invalid">
+                    {errores.categoryId}
+                  </Form.Control.Feedback>
+                )}
+              </Form.Group>
 
-            {error && <p className="text-danger mb-3">{error}</p>}
+              <Form.Group className="mb-4">
+                <Form.Label style={{ color: colores.textMain }}>
+                  URL de la imagen
+                </Form.Label>
+                <Form.Control
+                  type="url"
+                  name="image"
+                  value={juego.image}
+                  onChange={handleChange}
+                  placeholder="https://ejemplo.com/imagen.jpg"
+                  ref={imagenRef}
+                  isInvalid={!!errores.image}
+                  required
+                  style={{
+                    backgroundColor: colores.background,
+                    color: colores.textMain,
+                    border: `1px solid ${colores.border}`,
+                  }}
+                />
+                {errores.image && (
+                  <Form.Control.Feedback type="invalid">
+                    {errores.image}
+                  </Form.Control.Feedback>
+                )}
+              </Form.Group>
 
-            <div className="d-grid">
-              <Button
-                type="submit"
-                variant="primary"
-                disabled={guardando || cargandoCategorias}
-              >
-                {guardando ? "Guardando..." : "Agregar juego"}
-              </Button>
-            </div>
-          </Form>
+              {error && <p className="text-danger mb-3">{error}</p>}
+
+              <div className="d-grid">
+                <Button
+                  type="submit"
+                  style={{
+                    backgroundColor: colores.primary,
+                    color: colores.background,
+                    border: "none",
+                    borderRadius: "8px",
+                    padding: "10px 20px",
+                    fontWeight: "600",
+                  }}
+                  disabled={guardando || cargandoCategorias}
+                >
+                  {guardando ? "Guardando..." : "Agregar juego"}
+                </Button>
+              </div>
+            </Form>
+          </div>
         </Col>
       </Row>
     </Container>
