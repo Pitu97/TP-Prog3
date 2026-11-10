@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
 import Table from "react-bootstrap/Table";
@@ -22,6 +22,16 @@ function Perfil() {
   );
 
   const [nuevoAdmin, setNuevoAdmin] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
+
+  const nombreAdminRef = useRef(null);
+  const emailAdminRef = useRef(null);
+  const passwordAdminRef = useRef(null);
+
+  const [erroresAdmin, setErroresAdmin] = useState({
     name: "",
     email: "",
     password: "",
@@ -116,13 +126,68 @@ function Perfil() {
     navigate("/login", { replace: true });
   };
 
+  const validarAdmin = () => {
+    const nuevosErrores = {
+      name: "",
+      email: "",
+      password: "",
+    };
+
+    const nombre = nuevoAdmin.name.trim();
+    const email = nuevoAdmin.email.trim();
+    const password = nuevoAdmin.password;
+
+    if (!nombre) {
+      nuevosErrores.name = "El nombre es obligatorio.";
+    } else if (nombre.length < 3) {
+      nuevosErrores.name = "El nombre debe tener al menos 3 caracteres.";
+    }
+
+    if (!email) {
+      nuevosErrores.email = "El email es obligatorio.";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      nuevosErrores.email = "Ingresá un email válido.";
+    }
+
+    if (!password) {
+      nuevosErrores.password = "La contraseña es obligatoria.";
+    } else if (password.length < 8) {
+      nuevosErrores.password =
+        "La contraseña debe tener al menos 8 caracteres.";
+    } else if (!/[A-Z]/.test(password)) {
+      nuevosErrores.password = "Debe contener al menos una mayúscula.";
+    } else if (!/[a-z]/.test(password)) {
+      nuevosErrores.password = "Debe contener al menos una minúscula.";
+    }
+
+    setErroresAdmin(nuevosErrores);
+
+    if (nuevosErrores.name) {
+      nombreAdminRef.current.focus();
+    } else if (nuevosErrores.email) {
+      emailAdminRef.current.focus();
+    } else if (nuevosErrores.password) {
+      passwordAdminRef.current.focus();
+    }
+
+    return !Object.values(nuevosErrores).some((error) => error !== "");
+  };
+
   const handlerCrearAdmin = async (e) => {
     e.preventDefault();
+
+    if (!validarAdmin()) {
+      return;
+    }
 
     try {
       setCreandoAdmin(true);
 
-      const datos = await crearAdmin(nuevoAdmin);
+      const datos = await crearAdmin({
+        ...nuevoAdmin,
+        name: nuevoAdmin.name.trim(),
+        email: nuevoAdmin.email.trim(),
+      });
 
       setUsuarios((usuariosActuales) => [...usuariosActuales, datos.user]);
 
@@ -291,7 +356,7 @@ function Perfil() {
           <div className="mb-4">
             <h3>Crear Administrador</h3>
 
-            <Form onSubmit={handlerCrearAdmin}>
+            <Form onSubmit={handlerCrearAdmin} noValidate>
               <Form.Group className="mb-3">
                 <Form.Label>Nombre</Form.Label>
                 <Form.Control
@@ -304,8 +369,15 @@ function Perfil() {
                       name: e.target.value,
                     })
                   }
+                  ref={nombreAdminRef}
+                  isInvalid={!!erroresAdmin.name}
                   required
                 />
+                {erroresAdmin.name && (
+                  <Form.Control.Feedback type="invalid">
+                    {erroresAdmin.name}
+                  </Form.Control.Feedback>
+                )}
               </Form.Group>
 
               <Form.Group className="mb-3">
@@ -320,8 +392,15 @@ function Perfil() {
                       email: e.target.value,
                     })
                   }
+                  ref={emailAdminRef}
+                  isInvalid={!!erroresAdmin.email}
                   required
                 />
+                {erroresAdmin.email && (
+                  <Form.Control.Feedback type="invalid">
+                    {erroresAdmin.email}
+                  </Form.Control.Feedback>
+                )}
               </Form.Group>
 
               <Form.Group className="mb-3">
@@ -336,8 +415,15 @@ function Perfil() {
                       password: e.target.value,
                     })
                   }
+                  ref={passwordAdminRef}
+                  isInvalid={!!erroresAdmin.password}
                   required
                 />
+                {erroresAdmin.password && (
+                  <Form.Control.Feedback type="invalid">
+                    {erroresAdmin.password}
+                  </Form.Control.Feedback>
+                )}
               </Form.Group>
 
               <button

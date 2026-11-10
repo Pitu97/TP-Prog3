@@ -47,12 +47,12 @@ function EditarJuego({
   useEffect(() => {
     if (juegoEncontrado) {
       setJuego({
-        name: juegoEncontrado.name,
-        description: juegoEncontrado.description,
-        price: juegoEncontrado.price,
-        platform: juegoEncontrado.platform,
-        categoryId: juegoEncontrado.categoryId,
-        image: juegoEncontrado.image,
+        name: juegoEncontrado.name ?? "",
+        description: juegoEncontrado.description ?? "",
+        price: juegoEncontrado.price ?? "",
+        platform: juegoEncontrado.platform ?? "",
+        categoryId: juegoEncontrado.categoryId ?? "",
+        image: juegoEncontrado.image ?? "",
       });
     }
   }, [juegoEncontrado]);
@@ -82,12 +82,11 @@ function EditarJuego({
       nuevosErrores.description = "La descripción es obligatoria.";
     }
 
-    if (!juego.price.toString().trim()) {
+    const precio = String(juego.price ?? "").trim();
+
+    if (!precio) {
       nuevosErrores.price = "El precio es obligatorio.";
-    } else if (
-      !Number.isFinite(Number(juego.price)) ||
-      Number(juego.price) <= 0
-    ) {
+    } else if (!Number.isFinite(Number(precio)) || Number(precio) <= 0) {
       nuevosErrores.price = "El precio debe ser mayor que cero.";
     }
 
