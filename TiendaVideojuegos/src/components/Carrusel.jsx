@@ -5,15 +5,29 @@ function Carrusel({ juegos }) {
   const { colores, modo } = useTheme();
   const juegosDestacados = juegos ? juegos.slice(0, 3) : [];
 
+  const imagenesCarrusel = {
+    "Elden Ring: Shadow of the Erdtree":
+      "https://cdn.akamai.steamstatic.com/steam/apps/1245620/capsule_616x353.jpg",
+
+    "Chrono Trigger Reborn":
+      "https://cdn.akamai.steamstatic.com/steam/apps/613830/capsule_616x353.jpg",
+
+    "God of War Ragnarök":
+      "https://cdn.akamai.steamstatic.com/steam/apps/2322010/capsule_616x353.jpg",
+  };
+
   return (
     <Carousel fade style={{ borderBottom: `2px solid ${colores.primary}` }}>
       {juegosDestacados.map((juego) => (
         <Carousel.Item key={juego.id}>
           <img
-            src={juego.image}
+            src={imagenesCarrusel[juego.name] || juego.image}
             alt={juego.name}
             className="d-block w-100"
-            style={{ height: "600px", objectFit: "cover" }}
+            style={{
+              height: "clamp(220px, 40vw, 420px)",
+              objectFit: "cover",
+            }}
           />
           <Carousel.Caption
             style={{
