@@ -5,17 +5,12 @@ import { crearCompra } from "../services/api";
 import { useState } from "react";
 import { Modal, Button } from "react-bootstrap";
 import { toast } from "react-toastify";
+import { obtenerPrecio } from "../utils/carrito";
 
 function Carrito({ carrito, setCarrito }) {
   const navigate = useNavigate();
   const { colores, modo } = useTheme();
   const [comprando, setComprando] = useState(false);
-
-  const obtenerPrecio = (juego) => {
-    const precio = Number(juego.price);
-
-    return Number.isFinite(precio) && precio > 0 ? precio : null;
-  };
 
   const carritoValido = carrito.every((juego) => {
     const precio = obtenerPrecio(juego);
